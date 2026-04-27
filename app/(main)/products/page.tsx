@@ -1,14 +1,21 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
-import { products, categories } from '@/lib/data'
+import { products as staticProducts, categories } from '@/lib/data'
+import { Product } from '@/types'
 
 function ProductsContent() {
   const searchParams = useSearchParams()
   const initialCategory = searchParams.get('category') || 'all'
   const [activeCategory, setActiveCategory] = useState(initialCategory)
   const [search, setSearch] = useState('')
+  const [products, setProducts] = useState<Product[]>(staticProducts)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('3j_products')
+    if (saved) setProducts(JSON.parse(saved))
+  }, [])
 
   const filtered = useMemo(() => {
     return products.filter(p => {
@@ -16,7 +23,7 @@ function ProductsContent() {
       const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase())
       return matchCategory && matchSearch
     })
-  }, [activeCategory, search])
+  }, [activeCategory, search, products])
 
   return (
     <div className="min-h-screen pt-24">
