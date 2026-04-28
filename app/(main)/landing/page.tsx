@@ -169,7 +169,7 @@ export default function LandingPage() {
         {/* Grid katalog */}
         <div className="flex flex-col gap-3 max-w-lg mx-auto">
           {catalogItems.map((item) => (
-            
+            <a
               key={item.label}
               href={item.link}
               target="_blank"
