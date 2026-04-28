@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="bg-dark-800 border-t border-gold-900/30">
       {/* Top section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
@@ -41,29 +41,6 @@ export default function Footer() {
                     className="text-cream/60 hover:text-gold-400 text-sm font-body transition-colors flex items-center gap-2 group">
                     <span className="text-gold-700 group-hover:text-gold-400 transition-colors">◆</span>
                     {cat.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Link Cepat */}
-          <div>
-            <h4 className="font-display text-gold-400 text-lg mb-4 font-semibold">Link Cepat</h4>
-            <ul className="space-y-2">
-              {[
-                { href: '/', label: 'Beranda' },
-                { href: '/products', label: 'Semua Produk' },
-                { href: '/articles', label: 'Artikel & Tips' },
-                { href: '/landing', label: 'Landing Page' },
-                { href: '/#about', label: 'Tentang Kami' },
-                { href: '/#contact', label: 'Kontak' },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href}
-                    className="text-cream/60 hover:text-gold-400 text-sm font-body transition-colors flex items-center gap-2 group">
-                    <span className="text-gold-700 group-hover:text-gold-400 transition-colors">◆</span>
-                    {link.label}
                   </Link>
                 </li>
               ))}
