@@ -101,7 +101,7 @@ export default function LandingPage() {
               <WaIcon />
               Chat WhatsApp Sekarang
             </a>
-            
+            <a
               href="#ekatalog"
               className="px-10 py-4 rounded-full font-body font-medium text-lg border border-gold-600/40 text-cream/80 hover:text-gold-400 hover:border-gold-400 transition-all duration-300"
             >
