@@ -11,6 +11,7 @@ export default function HeroSlideshow({ slides }: Props) {
   const [current, setCurrent] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
   const goTo = useCallback((idx: number) => {
     if (isAnimating) return
@@ -27,18 +28,40 @@ export default function HeroSlideshow({ slides }: Props) {
     goTo((current - 1 + slides.length) % slides.length)
   }, [current, slides.length, goTo])
 
-  // Auto-play
+  // Auto-play 3 detik
   useEffect(() => {
-    timerRef.current = setTimeout(next, 5000)
+    timerRef.current = setTimeout(next, 3000)
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [current, next])
 
+  // Touch swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(deltaX) > 50) {
+      if (deltaX < 0) {
+        next() // swipe kiri = next
+      } else {
+        prev() // swipe kanan = prev
+      }
+    }
+    touchStartX.current = null
+  }
+
   const slide = slides[current]
 
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
+    <section
+      className="relative h-[60vh] sm:h-[75vh] md:h-screen min-h-[400px] max-h-[900px] overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Slides */}
       {slides.map((s, idx) => (
         <div
@@ -66,33 +89,33 @@ export default function HeroSlideshow({ slides }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="max-w-2xl">
             {/* Label */}
-            <div className={`flex items-center gap-3 mb-4 transition-all duration-700 delay-100 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className={`flex items-center gap-3 mb-3 md:mb-4 transition-all duration-700 delay-100 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <div className="h-px w-12 bg-gold-500" />
-              <span className="text-gold-400 text-sm font-body tracking-widest uppercase">Material Interior Premium</span>
+              <span className="text-gold-400 text-xs md:text-sm font-body tracking-widest uppercase">Material Interior Premium</span>
             </div>
 
             {/* Title */}
-            <h1 className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 transition-all duration-700 delay-200 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <h1 className={`font-display text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4 md:mb-6 transition-all duration-700 delay-200 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
               <span className="text-cream block">{slide.title}</span>
             </h1>
 
             {/* Subtitle */}
-            <p className={`text-cream/70 text-lg sm:text-xl font-body font-light mb-8 leading-relaxed transition-all duration-700 delay-300 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p className={`text-cream/70 text-sm sm:text-lg md:text-xl font-body font-light mb-6 md:mb-8 leading-relaxed transition-all duration-700 delay-300 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {slide.subtitle}
             </p>
 
             {/* CTAs */}
-            <div className={`flex flex-wrap gap-4 transition-all duration-700 delay-400 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div className={`flex flex-wrap gap-3 md:gap-4 transition-all duration-700 delay-400 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {slide.cta && slide.ctaLink && (
-                <Link href={slide.ctaLink} className="btn-gold px-8 py-3.5 rounded-full font-body font-medium text-sm tracking-wide">
+                <Link href={slide.ctaLink} className="btn-gold px-6 md:px-8 py-3 md:py-3.5 rounded-full font-body font-medium text-sm tracking-wide">
                   {slide.cta}
                 </Link>
               )}
-              <a
+              
                 href="https://wa.me/6281385887778"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-3.5 rounded-full font-body font-medium text-sm tracking-wide border border-gold-600/40 text-cream/80 hover:text-gold-400 hover:border-gold-400 transition-all duration-300"
+                className="px-6 md:px-8 py-3 md:py-3.5 rounded-full font-body font-medium text-sm tracking-wide border border-gold-600/40 text-cream/80 hover:text-gold-400 hover:border-gold-400 transition-all duration-300"
               >
                 Konsultasi Gratis
               </a>
@@ -101,10 +124,10 @@ export default function HeroSlideshow({ slides }: Props) {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows — hanya tampil di desktop */}
       <button
         onClick={prev}
-        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full glass-card flex items-center justify-center hover:border-gold-400/60 transition-all duration-300 group"
+        className="hidden md:flex absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full glass-card items-center justify-center hover:border-gold-400/60 transition-all duration-300 group"
         aria-label="Previous slide"
       >
         <svg className="w-5 h-5 text-gold-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +136,7 @@ export default function HeroSlideshow({ slides }: Props) {
       </button>
       <button
         onClick={next}
-        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full glass-card flex items-center justify-center hover:border-gold-400/60 transition-all duration-300 group"
+        className="hidden md:flex absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full glass-card items-center justify-center hover:border-gold-400/60 transition-all duration-300 group"
         aria-label="Next slide"
       >
         <svg className="w-5 h-5 text-gold-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +145,7 @@ export default function HeroSlideshow({ slides }: Props) {
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
         {slides.map((_, idx) => (
           <button
             key={idx}
@@ -133,8 +156,8 @@ export default function HeroSlideshow({ slides }: Props) {
         ))}
       </div>
 
-      {/* Slide counter */}
-      <div className="absolute bottom-8 right-6 z-30 font-display text-gold-600 text-sm">
+      {/* Slide counter — hanya desktop */}
+      <div className="hidden md:block absolute bottom-8 right-6 z-30 font-display text-gold-600 text-sm">
         <span className="text-gold-400">{String(current + 1).padStart(2, '0')}</span>
         <span className="text-cream/30 mx-1">/</span>
         <span>{String(slides.length).padStart(2, '0')}</span>
