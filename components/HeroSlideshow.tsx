@@ -101,6 +101,7 @@ export default function HeroSlideshow({ slides }: Props) {
                 </Link>
               )}
               
+              <a
                 href="https://wa.me/6281385887778"
                 target="_blank"
                 rel="noopener noreferrer"
