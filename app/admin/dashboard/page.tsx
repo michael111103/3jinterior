@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { products as initialProducts, categories, articles as initialArticles, siteSettings as initialSettings } from '@/lib/data'
+import { categories, articles as initialArticles, siteSettings as initialSettings } from '@/lib/data'
 import { Product, Article } from '@/types'
+import { supabase } from '@/lib/supabase'
 
 type Tab = 'overview' | 'products' | 'articles' | 'settings' | 'slideshow'
 
@@ -11,66 +12,100 @@ const ADMIN_KEY = '3j_admin'
 export default function AdminDashboard() {
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('overview')
-  const [products, setProducts] = useState<Product[]>(initialProducts)
-  const [articles, setArticles] = useState<Article[]>(initialArticles)
+  const [products, setProducts] = useState<Product[]>([])
+  const [articles] = useState<Article[]>(initialArticles)
   const [settings, setSettings] = useState(initialSettings)
   const [showAddProduct, setShowAddProduct] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [newProduct, setNewProduct] = useState<Partial<Product>>({ category: categories[0].slug })
   const [toast, setToast] = useState('')
+  const [toastType, setToastType] = useState<'success' | 'error'>('success')
   const [searchProd, setSearchProd] = useState('')
+  const [loadingProducts, setLoadingProducts] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const auth = localStorage.getItem(ADMIN_KEY)
       if (!auth) router.replace('/admin')
-
-      // Load from localStorage if saved
-      const saved = localStorage.getItem('3j_products')
-      if (saved) setProducts(JSON.parse(saved))
-      const savedArticles = localStorage.getItem('3j_articles')
-      if (savedArticles) setArticles(JSON.parse(savedArticles))
-      const savedSettings = localStorage.getItem('3j_settings')
-      if (savedSettings) setSettings(JSON.parse(savedSettings))
+      else loadProducts()
     }
   }, [router])
 
-  const showToast = (msg: string) => {
+  const loadProducts = async () => {
+    setLoadingProducts(true)
+    const { data, error } = await supabase.from('products').select('*').order('name')
+    if (error) {
+      showToast('Gagal memuat produk: ' + error.message, 'error')
+    } else {
+      setProducts(data || [])
+    }
+    setLoadingProducts(false)
+  }
+
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast(msg)
-    setTimeout(() => setToast(''), 3000)
+    setToastType(type)
+    setTimeout(() => setToast(''), 3500)
   }
 
-  const saveProducts = (prods: Product[]) => {
-    setProducts(prods)
-    localStorage.setItem('3j_products', JSON.stringify(prods))
-    showToast('Produk berhasil disimpan!')
-  }
-
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     if (!newProduct.name || !newProduct.category) return
-    const prod: Product = {
+    setSaving(true)
+    const prod = {
       id: `p-${Date.now()}`,
       name: newProduct.name || '',
       category: newProduct.category || categories[0].slug,
       description: newProduct.description || '',
       image: newProduct.image || 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80',
-      sizes: newProduct.sizes,
-      featured: newProduct.featured,
+      sizes: newProduct.sizes || [],
+      featured: newProduct.featured || false,
     }
-    saveProducts([...products, prod])
-    setNewProduct({ category: categories[0].slug })
-    setShowAddProduct(false)
+    const { error } = await supabase.from('products').insert([prod])
+    if (error) {
+      showToast('Gagal menambah produk: ' + error.message, 'error')
+    } else {
+      showToast('Produk berhasil ditambahkan!')
+      setNewProduct({ category: categories[0].slug })
+      setShowAddProduct(false)
+      await loadProducts()
+    }
+    setSaving(false)
   }
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: string) => {
     if (!confirm('Yakin hapus produk ini?')) return
-    saveProducts(products.filter(p => p.id !== id))
+    const { error } = await supabase.from('products').delete().eq('id', id)
+    if (error) {
+      showToast('Gagal menghapus produk: ' + error.message, 'error')
+    } else {
+      showToast('Produk berhasil dihapus!')
+      setProducts(products.filter(p => p.id !== id))
+    }
   }
 
-  const handleUpdateProduct = () => {
+  const handleUpdateProduct = async () => {
     if (!editingProduct) return
-    saveProducts(products.map(p => p.id === editingProduct.id ? editingProduct : p))
-    setEditingProduct(null)
+    setSaving(true)
+    const { error } = await supabase
+      .from('products')
+      .update({
+        name: editingProduct.name,
+        category: editingProduct.category,
+        description: editingProduct.description,
+        image: editingProduct.image,
+        sizes: editingProduct.sizes,
+        featured: editingProduct.featured,
+      })
+      .eq('id', editingProduct.id)
+    if (error) {
+      showToast('Gagal mengupdate produk: ' + error.message, 'error')
+    } else {
+      showToast('Produk berhasil diupdate!')
+      setEditingProduct(null)
+      await loadProducts()
+    }
+    setSaving(false)
   }
 
   const handleSaveSettings = () => {
@@ -99,7 +134,6 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-dark-900">
       {/* Sidebar */}
       <aside className="w-64 bg-dark-800 border-r border-gold-900/30 flex flex-col fixed h-full z-40">
-        {/* Logo */}
         <div className="p-6 border-b border-gold-900/20">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center">
@@ -112,7 +146,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map(item => (
             <button
@@ -130,7 +163,6 @@ export default function AdminDashboard() {
           ))}
         </nav>
 
-        {/* Links */}
         <div className="p-4 border-t border-gold-900/20 space-y-2">
           <a href="/" target="_blank" className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-body text-cream/50 hover:text-cream hover:bg-dark-700 transition-all">
             <span>🌐</span> Lihat Website
@@ -148,8 +180,12 @@ export default function AdminDashboard() {
       <main className="ml-64 flex-1 p-6 md:p-8 overflow-auto">
         {/* Toast */}
         {toast && (
-          <div className="fixed top-6 right-6 z-50 bg-green-900/90 border border-green-700/50 text-green-300 px-5 py-3 rounded-xl font-body text-sm shadow-xl">
-            ✓ {toast}
+          <div className={`fixed top-6 right-6 z-50 border px-5 py-3 rounded-xl font-body text-sm shadow-xl ${
+            toastType === 'error'
+              ? 'bg-red-900/90 border-red-700/50 text-red-300'
+              : 'bg-green-900/90 border-green-700/50 text-green-300'
+          }`}>
+            {toastType === 'success' ? '✓' : '✕'} {toast}
           </div>
         )}
 
@@ -178,9 +214,11 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="glass-card rounded-xl p-6">
-                <h3 className="font-display text-lg font-semibold text-gold-400 mb-4">Produk Terbaru</h3>
+                <h3 className="font-display text-lg font-semibold text-gold-400 mb-4">Produk Terbaru (dari Supabase)</h3>
                 <div className="space-y-3">
-                  {products.slice(-5).reverse().map(p => (
+                  {loadingProducts ? (
+                    <p className="text-cream/40 text-sm font-body">Memuat...</p>
+                  ) : products.slice(-5).reverse().map(p => (
                     <div key={p.id} className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${p.image})` }} />
                       <div className="flex-1 min-w-0">
@@ -224,7 +262,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="font-display text-3xl font-bold text-cream">Manajemen Produk</h1>
-                <p className="text-cream/50 font-body text-sm mt-1">{products.length} produk terdaftar</p>
+                <p className="text-cream/50 font-body text-sm mt-1">{products.length} produk di Supabase</p>
               </div>
               <button
                 onClick={() => setShowAddProduct(true)}
@@ -293,6 +331,9 @@ export default function AdminDashboard() {
                         className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
                         placeholder="https://..."
                       />
+                      {newProduct.image && (
+                        <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${newProduct.image})` }} />
+                      )}
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Ukuran (pisah dengan koma)</label>
@@ -309,7 +350,9 @@ export default function AdminDashboard() {
                     </label>
                   </div>
                   <div className="flex gap-3 mt-6">
-                    <button onClick={handleAddProduct} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm">Simpan Produk</button>
+                    <button onClick={handleAddProduct} disabled={saving} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm disabled:opacity-60">
+                      {saving ? 'Menyimpan...' : 'Simpan ke Supabase'}
+                    </button>
                     <button onClick={() => { setShowAddProduct(false); setNewProduct({ category: categories[0].slug }) }} className="flex-1 py-2.5 rounded-xl font-body text-sm border border-cream/20 text-cream/60 hover:text-cream transition-colors">Batal</button>
                   </div>
                 </div>
@@ -358,6 +401,9 @@ export default function AdminDashboard() {
                         onChange={e => setEditingProduct({ ...editingProduct, image: e.target.value })}
                         className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
                       />
+                      {editingProduct.image && (
+                        <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${editingProduct.image})` }} />
+                      )}
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={!!editingProduct.featured} onChange={e => setEditingProduct({ ...editingProduct, featured: e.target.checked })} className="w-4 h-4 accent-gold-500" />
@@ -365,7 +411,9 @@ export default function AdminDashboard() {
                     </label>
                   </div>
                   <div className="flex gap-3 mt-6">
-                    <button onClick={handleUpdateProduct} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm">Update Produk</button>
+                    <button onClick={handleUpdateProduct} disabled={saving} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm disabled:opacity-60">
+                      {saving ? 'Menyimpan...' : 'Update Produk'}
+                    </button>
                     <button onClick={() => setEditingProduct(null)} className="flex-1 py-2.5 rounded-xl font-body text-sm border border-cream/20 text-cream/60 hover:text-cream transition-colors">Batal</button>
                   </div>
                 </div>
@@ -374,61 +422,72 @@ export default function AdminDashboard() {
 
             {/* Products Table */}
             <div className="glass-card rounded-xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gold-900/30">
-                      <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Produk</th>
-                      <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden md:table-cell">Kategori</th>
-                      <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden lg:table-cell">Ukuran</th>
-                      <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Featured</th>
-                      <th className="text-right px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredProducts.map(product => (
-                      <tr key={product.id} className="border-b border-gold-900/10 hover:bg-dark-700/30 transition-colors">
-                        <td className="px-5 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${product.image})` }} />
-                            <p className="text-cream text-sm font-body line-clamp-1">{product.name}</p>
-                          </div>
-                        </td>
-                        <td className="px-5 py-3 hidden md:table-cell">
-                          <span className="text-xs font-body px-2.5 py-1 bg-gold-900/20 border border-gold-800/30 text-gold-500 rounded-full">
-                            {categories.find(c => c.slug === product.category)?.name}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3 hidden lg:table-cell">
-                          <p className="text-cream/50 text-xs font-body">{product.sizes?.join(', ') || '-'}</p>
-                        </td>
-                        <td className="px-5 py-3 text-center">
-                          {product.featured
-                            ? <span className="text-gold-400 text-xs">⭐ Ya</span>
-                            : <span className="text-cream/30 text-xs">-</span>
-                          }
-                        </td>
-                        <td className="px-5 py-3">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => setEditingProduct(product)}
-                              className="text-xs px-3 py-1.5 border border-gold-800/40 text-gold-400 hover:bg-gold-900/20 rounded-lg font-body transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteProduct(product.id)}
-                              className="text-xs px-3 py-1.5 border border-red-800/40 text-red-400 hover:bg-red-900/20 rounded-lg font-body transition-colors"
-                            >
-                              Hapus
-                            </button>
-                          </div>
-                        </td>
+              {loadingProducts ? (
+                <div className="p-12 text-center">
+                  <p className="text-cream/40 font-body">Memuat produk dari Supabase...</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gold-900/30">
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Produk</th>
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden md:table-cell">Kategori</th>
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden lg:table-cell">Ukuran</th>
+                        <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Featured</th>
+                        <th className="text-right px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Aksi</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredProducts.map(product => (
+                        <tr key={product.id} className="border-b border-gold-900/10 hover:bg-dark-700/30 transition-colors">
+                          <td className="px-5 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${product.image})` }} />
+                              <p className="text-cream text-sm font-body line-clamp-1">{product.name}</p>
+                            </div>
+                          </td>
+                          <td className="px-5 py-3 hidden md:table-cell">
+                            <span className="text-xs font-body px-2.5 py-1 bg-gold-900/20 border border-gold-800/30 text-gold-500 rounded-full">
+                              {categories.find(c => c.slug === product.category)?.name}
+                            </span>
+                          </td>
+                          <td className="px-5 py-3 hidden lg:table-cell">
+                            <p className="text-cream/50 text-xs font-body">{product.sizes?.join(', ') || '-'}</p>
+                          </td>
+                          <td className="px-5 py-3 text-center">
+                            {product.featured
+                              ? <span className="text-gold-400 text-xs">⭐ Ya</span>
+                              : <span className="text-cream/30 text-xs">-</span>
+                            }
+                          </td>
+                          <td className="px-5 py-3">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => setEditingProduct(product)}
+                                className="text-xs px-3 py-1.5 border border-gold-800/40 text-gold-400 hover:bg-gold-900/20 rounded-lg font-body transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteProduct(product.id)}
+                                className="text-xs px-3 py-1.5 border border-red-800/40 text-red-400 hover:bg-red-900/20 rounded-lg font-body transition-colors"
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {filteredProducts.length === 0 && (
+                    <div className="p-12 text-center">
+                      <p className="text-cream/40 font-body text-sm">Belum ada produk. Klik "Tambah Produk" untuk mulai.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -442,7 +501,6 @@ export default function AdminDashboard() {
                 <p className="text-cream/50 font-body text-sm mt-1">{articles.length} artikel tersedia</p>
               </div>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {articles.map(article => (
                 <div key={article.id} className="glass-card rounded-xl p-4 flex gap-4">
@@ -470,29 +528,10 @@ export default function AdminDashboard() {
           <div>
             <h1 className="font-display text-3xl font-bold text-cream mb-2">Manajemen Slideshow</h1>
             <p className="text-cream/50 font-body text-sm mb-8">Kelola gambar dan konten slideshow halaman utama</p>
-
             <div className="glass-card rounded-xl p-6">
               <p className="text-cream/60 font-body text-sm mb-6">
                 Slideshow saat ini menggunakan 5 slide otomatis. Untuk mengubah gambar, update URL di file <code className="text-gold-400 bg-dark-700 px-1.5 py-0.5 rounded text-xs">lib/data.ts</code> pada array <code className="text-gold-400 bg-dark-700 px-1.5 py-0.5 rounded text-xs">slides</code>.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { title: 'Panel WPC Premium', subtitle: 'Transformasi ruangan Anda...', img: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&q=60' },
-                  { title: 'Wallboard & UV Marmer', subtitle: 'Material dinding mewah...', img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=60' },
-                  { title: 'Decking Outdoor', subtitle: 'Solusi taman dan teras...', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=60' },
-                  { title: 'Harga Grosir Gudang', subtitle: 'Dapatkan harga terbaik...', img: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=400&q=60' },
-                  { title: 'UV Marmer Mewah', subtitle: 'Tampilan marmer premium...', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=60' },
-                ].map((slide, i) => (
-                  <div key={i} className="relative rounded-xl overflow-hidden">
-                    <div className="aspect-video bg-cover bg-center" style={{ backgroundImage: `url(${slide.img})` }} />
-                    <div className="absolute inset-0 bg-dark-900/60 p-3 flex flex-col justify-end">
-                      <p className="text-cream text-sm font-display font-semibold">{slide.title}</p>
-                      <p className="text-cream/60 text-xs font-body mt-0.5">{slide.subtitle}</p>
-                      <span className="absolute top-2 left-2 bg-gold-600/90 text-dark-900 text-xs font-body font-bold px-2 py-0.5 rounded-full">Slide {i + 1}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         )}
@@ -502,7 +541,6 @@ export default function AdminDashboard() {
           <div>
             <h1 className="font-display text-3xl font-bold text-cream mb-2">Pengaturan Website</h1>
             <p className="text-cream/50 font-body text-sm mb-8">Ubah informasi kontak dan teks website</p>
-
             <div className="glass-card rounded-xl p-6 max-w-2xl">
               <div className="space-y-5">
                 {[
@@ -533,11 +571,7 @@ export default function AdminDashboard() {
                     )}
                   </div>
                 ))}
-
-                <button
-                  onClick={handleSaveSettings}
-                  className="btn-gold px-8 py-3 rounded-xl font-body font-medium mt-2"
-                >
+                <button onClick={handleSaveSettings} className="btn-gold px-8 py-3 rounded-xl font-body font-medium mt-2">
                   Simpan Pengaturan
                 </button>
               </div>
