@@ -1,7 +1,6 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
 import { categories } from '@/lib/data'
 import { Product } from '@/types'
 import { supabase } from '@/lib/supabase'
@@ -66,11 +65,18 @@ function ProductsContent() {
         </div>
 
         <div className="flex flex-wrap gap-3 mb-10">
-          <button onClick={() => setActiveCategory('all')} className={`px-5 py-2 rounded-full text-sm font-body transition-all duration-200 ${activeCategory === 'all' ? 'btn-gold' : 'border border-gold-800/30 text-cream/60 hover:text-gold-400 hover:border-gold-600'}`}>
+          <button
+            onClick={() => setActiveCategory('all')}
+            className={`px-5 py-2 rounded-full text-sm font-body transition-all duration-200 ${activeCategory === 'all' ? 'btn-gold' : 'border border-gold-800/30 text-cream/60 hover:text-gold-400 hover:border-gold-600'}`}
+          >
             Semua
           </button>
           {categories.map(cat => (
-            <button key={cat.id} onClick={() => setActiveCategory(cat.slug)} className={`px-5 py-2 rounded-full text-sm font-body transition-all duration-200 ${activeCategory === cat.slug ? 'btn-gold' : 'border border-gold-800/30 text-cream/60 hover:text-gold-400 hover:border-gold-600'}`}>
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.slug)}
+              className={`px-5 py-2 rounded-full text-sm font-body transition-all duration-200 ${activeCategory === cat.slug ? 'btn-gold' : 'border border-gold-800/30 text-cream/60 hover:text-gold-400 hover:border-gold-600'}`}
+            >
               {cat.name}
             </button>
           ))}
@@ -87,7 +93,10 @@ function ProductsContent() {
               {filtered.map(product => (
                 <div key={product.id} className="glass-card rounded-xl overflow-hidden product-card group">
                   <div className="aspect-[4/3] relative overflow-hidden">
-                    <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url(${product.image})` }} />
+                    <div
+                      className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                      style={{ backgroundImage: `url(${product.image})` }}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent" />
                     <span className="absolute top-2 left-2 bg-dark-800/80 backdrop-blur-sm text-gold-400 text-xs font-body px-2.5 py-1 rounded-full border border-gold-800/40">
                       {categories.find(c => c.slug === product.category)?.name}
@@ -98,12 +107,12 @@ function ProductsContent() {
                     <p className="text-cream/50 text-xs font-body mt-1.5 line-clamp-2 leading-relaxed">{product.description}</p>
                     {product.sizes && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
-                        {product.sizes.map(size => (
+                        {product.sizes.map((size: string) => (
                           <span key={size} className="text-xs font-body px-2 py-0.5 bg-gold-900/20 border border-gold-800/30 text-gold-500 rounded">{size}</span>
                         ))}
                       </div>
                     )}
-                    <a
+                    
                       href={`https://wa.me/6281385887778?text=Halo,%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.name)},%20mohon%20info%20harga%20dan%20ketersediaannya`}
                       target="_blank"
                       rel="noopener noreferrer"
