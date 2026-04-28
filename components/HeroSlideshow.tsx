@@ -43,11 +43,8 @@ export default function HeroSlideshow({ slides }: Props) {
     if (touchStartX.current === null) return
     const deltaX = e.changedTouches[0].clientX - touchStartX.current
     if (Math.abs(deltaX) > 50) {
-      if (deltaX < 0) {
-        next()
-      } else {
-        prev()
-      }
+      if (deltaX < 0) next()
+      else prev()
     }
     touchStartX.current = null
   }
@@ -56,7 +53,7 @@ export default function HeroSlideshow({ slides }: Props) {
 
   return (
     <section
-      className="relative h-[60vh] sm:h-[75vh] md:h-screen min-h-[400px] max-h-[900px] overflow-hidden"
+      className="relative h-[55vh] sm:h-[65vh] md:h-[75vh] min-h-[350px] max-h-[800px] overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -66,18 +63,20 @@ export default function HeroSlideshow({ slides }: Props) {
           className={`absolute inset-0 transition-opacity duration-700 ${idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
         >
           <div
-            className="absolute inset-0 bg-cover bg-center transform scale-105 transition-transform duration-[8000ms]"
+            className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: `url(${s.image})`,
               transform: idx === current ? 'scale(1.05)' : 'scale(1)',
+              transition: 'transform 8000ms ease',
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-dark-900/90 via-dark-900/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-dark-900/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-transparent to-dark-900/10" />
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-gold-500 to-transparent" />
         </div>
       ))}
 
+      {/* Content */}
       <div className="relative z-20 h-full flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="max-w-2xl">
@@ -86,11 +85,11 @@ export default function HeroSlideshow({ slides }: Props) {
               <span className="text-gold-400 text-xs md:text-sm font-body tracking-widest uppercase">Material Interior Premium</span>
             </div>
 
-            <h1 className={`font-display text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4 md:mb-6 transition-all duration-700 delay-200 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <h1 className={`font-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6 transition-all duration-700 delay-200 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
               <span className="text-cream block">{slide.title}</span>
             </h1>
 
-            <p className={`text-cream/70 text-sm sm:text-lg md:text-xl font-body font-light mb-6 md:mb-8 leading-relaxed transition-all duration-700 delay-300 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p className={`text-cream/70 text-sm sm:text-base md:text-lg font-body font-light mb-6 md:mb-8 leading-relaxed transition-all duration-700 delay-300 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               {slide.subtitle}
             </p>
 
@@ -100,7 +99,6 @@ export default function HeroSlideshow({ slides }: Props) {
                   {slide.cta}
                 </Link>
               )}
-              
               <a
                 href="https://wa.me/6281385887778"
                 target="_blank"
@@ -114,6 +112,7 @@ export default function HeroSlideshow({ slides }: Props) {
         </div>
       </div>
 
+      {/* Prev/Next buttons */}
       <button
         onClick={prev}
         className="hidden md:flex absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full glass-card items-center justify-center hover:border-gold-400/60 transition-all duration-300 group"
@@ -133,6 +132,7 @@ export default function HeroSlideshow({ slides }: Props) {
         </svg>
       </button>
 
+      {/* Dots */}
       <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
         {slides.map((_, idx) => (
           <button
@@ -144,6 +144,7 @@ export default function HeroSlideshow({ slides }: Props) {
         ))}
       </div>
 
+      {/* Slide counter */}
       <div className="hidden md:block absolute bottom-8 right-6 z-30 font-display text-gold-600 text-sm">
         <span className="text-gold-400">{String(current + 1).padStart(2, '0')}</span>
         <span className="text-cream/30 mx-1">/</span>
