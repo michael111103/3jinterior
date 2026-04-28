@@ -312,7 +312,7 @@ export default function HomePage() {
                   isWA: true,
                 },
               ].map((item) => (
-                
+                <a
                   key={item.label}
                   href={item.link}
                   target={item.link.startsWith('http') ? '_blank' : undefined}
