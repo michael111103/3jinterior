@@ -2,13 +2,6 @@ import Link from 'next/link'
 import HeroSlideshow from '@/components/HeroSlideshow'
 import { slides, categories, products, articles, siteSettings } from '@/lib/data'
 
-const stats = [
-  { value: '500+', label: 'Produk Tersedia' },
-  { value: '1000+', label: 'Klien Puas' },
-  { value: '5+', label: 'Tahun Pengalaman' },
-  { value: '34', label: 'Provinsi Dilayani' },
-]
-
 const whyUs = [
   {
     icon: '🏭',
@@ -41,23 +34,8 @@ export default function HomePage() {
       {/* Hero Slideshow */}
       <HeroSlideshow slides={slides} />
 
-      {/* Stats Bar */}
-      <section className="bg-dark-800 border-y border-gold-900/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="font-display text-3xl md:text-4xl font-bold gold-text">{stat.value}</p>
-                <p className="text-cream/60 text-sm font-body mt-1">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Kategori Produk */}
       <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto">
-        {/* Section header */}
         <div className="text-center mb-14">
           <div className="flex items-center justify-center gap-4 mb-3">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-500" />
@@ -98,7 +76,6 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              {/* Gold corner accent */}
               <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
                 <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-gold-500/40 rounded-tr-lg" />
               </div>
@@ -150,6 +127,7 @@ export default function HomePage() {
                       ))}
                     </div>
                   )}
+                  
                   <a
                     href={`https://wa.me/6281385887778?text=Halo, saya tertarik dengan produk ${encodeURIComponent(product.name)}`}
                     target="_blank"
@@ -185,6 +163,7 @@ export default function HomePage() {
             <p className="text-cream/60 font-body leading-relaxed mb-10">
               Dengan pengalaman lebih dari 5 tahun melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
             </p>
+            
             <a
               href="https://wa.me/6281385887778"
               target="_blank"
@@ -226,6 +205,7 @@ export default function HomePage() {
             Dapatkan penawaran harga terbaik dan konsultasi gratis dari tim ahli 3J Interior. Hubungi kami sekarang via WhatsApp.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
+            
             <a
               href="https://wa.me/6281385887778"
               target="_blank"
@@ -237,6 +217,7 @@ export default function HomePage() {
               </svg>
               Chat WhatsApp
             </a>
+            
             <a
               href="mailto:3jinterior.id@gmail.com"
               className="px-10 py-4 rounded-full font-body font-semibold text-lg border border-cream/30 text-cream hover:border-gold-400 hover:text-gold-400 transition-all duration-300"
@@ -313,7 +294,6 @@ export default function HomePage() {
           </div>
 
           <div className="grid lg:grid-cols-5 gap-8 items-start">
-            {/* Contact info */}
             <div className="lg:col-span-2 space-y-5">
               {[
                 {
@@ -336,7 +316,7 @@ export default function HomePage() {
                   isWA: true,
                 },
               ].map((item) => (
-                <a
+                
                   key={item.label}
                   href={item.link}
                   target={item.link.startsWith('http') ? '_blank' : undefined}
@@ -362,7 +342,6 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Map */}
             <div className="lg:col-span-3">
               <div className="rounded-2xl overflow-hidden gold-border gold-glow h-80 relative">
                 <iframe
@@ -375,6 +354,7 @@ export default function HomePage() {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Lokasi 3J Interior"
                 />
+                
                 <a
                   href="https://maps.app.goo.gl/GVY1PQUqhTzufBur8?g_st=ic"
                   target="_blank"
