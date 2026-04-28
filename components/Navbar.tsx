@@ -38,9 +38,9 @@ export default function Navbar() {
             <Image
               src="/images/logo-3j.PNG"
               alt="3J Interior"
-              width={44}
-              height={44}
-              style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
+              width={64}
+              height={64}
+              style={{ height: '58px', width: 'auto', objectFit: 'contain' }}
               priority
             />
             <div>
