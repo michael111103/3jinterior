@@ -127,7 +127,7 @@ export default function HomePage() {
                       ))}
                     </div>
                   )}
-                  
+                  <a
                     href={`https://wa.me/6281385887778?text=Halo, saya tertarik dengan produk ${encodeURIComponent(product.name)}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -162,7 +162,7 @@ export default function HomePage() {
             <p className="text-cream/60 font-body leading-relaxed mb-10">
               Dengan pengalaman lebih dari 5 tahun melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
             </p>
-            
+            <a
               href="https://wa.me/6281385887778"
               target="_blank"
               rel="noopener noreferrer"
@@ -203,7 +203,7 @@ export default function HomePage() {
             Dapatkan penawaran harga terbaik dan konsultasi gratis dari tim ahli 3J Interior. Hubungi kami sekarang via WhatsApp.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            
+            <a
               href="https://wa.me/6281385887778"
               target="_blank"
               rel="noopener noreferrer"
@@ -214,7 +214,7 @@ export default function HomePage() {
               </svg>
               Chat WhatsApp
             </a>
-            
+            <a
               href="mailto:3jinterior.id@gmail.com"
               className="px-10 py-4 rounded-full font-body font-semibold text-lg border border-cream/30 text-cream hover:border-gold-400 hover:text-gold-400 transition-all duration-300"
             >
@@ -350,7 +350,7 @@ export default function HomePage() {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Lokasi 3J Interior"
                 />
-                
+                <a
                   href="https://maps.app.goo.gl/GVY1PQUqhTzufBur8?g_st=ic"
                   target="_blank"
                   rel="noopener noreferrer"
