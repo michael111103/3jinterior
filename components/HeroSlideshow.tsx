@@ -56,9 +56,11 @@ export default function HeroSlideshow({ slides }: Props) {
         height: 'clamp(320px, 70vh, 800px)',
         overflow: 'hidden',
         display: 'block',
+        marginTop: 0,
+        paddingTop: 0,
       }}
     >
-      {/* Slide backgrounds */}
+      {/* Slides background */}
       {slides.map((s, idx) => (
         <div
           key={s.id}
@@ -91,17 +93,19 @@ export default function HeroSlideshow({ slides }: Props) {
       <div style={{ position: 'relative', zIndex: 20, height: '100%', display: 'flex', alignItems: 'center' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
           <div style={{ maxWidth: '640px' }}>
+
             <div style={{
               display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
-              opacity: isAnimating ? 0 : 1, transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
               transition: 'all 0.7s ease 0.1s',
             }}>
               <div style={{ height: '1px', width: '48px', background: '#d4980f' }} />
-              <span style={{ color: '#d4980f', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Material Interior Premium</span>
+              <span style={{ color: '#d4980f', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Material Interior Premium</span>
             </div>
 
             <h1 style={{
-              fontSize: 'clamp(1.75rem, 5vw, 3.5rem)',
+              fontSize: 'clamp(1.6rem, 5vw, 3.5rem)',
               fontWeight: 700,
               color: '#fdf6e3',
               lineHeight: 1.15,
@@ -115,7 +119,7 @@ export default function HeroSlideshow({ slides }: Props) {
 
             <p style={{
               color: 'rgba(253,246,227,0.7)',
-              fontSize: 'clamp(0.875rem, 2vw, 1.1rem)',
+              fontSize: 'clamp(0.85rem, 2vw, 1.05rem)',
               lineHeight: 1.7,
               marginBottom: '28px',
               opacity: isAnimating ? 0 : 1,
@@ -132,7 +136,11 @@ export default function HeroSlideshow({ slides }: Props) {
               transition: 'all 0.7s ease 0.4s',
             }}>
               {slide.cta && slide.ctaLink && (
-                <Link href={slide.ctaLink} className="btn-gold" style={{ padding: '12px 28px', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none' }}>
+                <Link
+                  href={slide.ctaLink}
+                  className="btn-gold"
+                  style={{ padding: '11px 28px', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none' }}
+                >
                   {slide.cta}
                 </Link>
               )}
@@ -141,14 +149,13 @@ export default function HeroSlideshow({ slides }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  padding: '12px 28px',
+                  padding: '11px 28px',
                   borderRadius: '9999px',
                   fontSize: '0.875rem',
                   fontWeight: 500,
                   border: '1px solid rgba(212,152,15,0.4)',
                   color: 'rgba(253,246,227,0.85)',
                   textDecoration: 'none',
-                  transition: 'all 0.3s',
                 }}
               >
                 Konsultasi Gratis
@@ -158,11 +165,11 @@ export default function HeroSlideshow({ slides }: Props) {
         </div>
       </div>
 
-      {/* Prev button */}
+      {/* Prev */}
       <button onClick={prev} aria-label="Previous" style={{
-        position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)',
+        position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
         zIndex: 30, width: '40px', height: '40px', borderRadius: '50%',
-        background: 'rgba(0,0,0,0.4)', border: 'none', cursor: 'pointer',
+        background: 'rgba(0,0,0,0.45)', border: 'none', cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <svg width="20" height="20" fill="none" stroke="#fdf6e3" viewBox="0 0 24 24">
@@ -170,11 +177,11 @@ export default function HeroSlideshow({ slides }: Props) {
         </svg>
       </button>
 
-      {/* Next button */}
+      {/* Next */}
       <button onClick={next} aria-label="Next" style={{
-        position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)',
+        position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
         zIndex: 30, width: '40px', height: '40px', borderRadius: '50%',
-        background: 'rgba(0,0,0,0.4)', border: 'none', cursor: 'pointer',
+        background: 'rgba(0,0,0,0.45)', border: 'none', cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <svg width="20" height="20" fill="none" stroke="#fdf6e3" viewBox="0 0 24 24">
@@ -198,16 +205,17 @@ export default function HeroSlideshow({ slides }: Props) {
               width: idx === current ? '32px' : '8px',
               height: '8px',
               background: idx === current ? '#d4980f' : 'rgba(255,255,255,0.35)',
+              padding: 0,
             }}
           />
         ))}
       </div>
 
       {/* Counter */}
-      <div style={{ position: 'absolute', bottom: '20px', right: '20px', zIndex: 30, fontSize: '0.85rem' }}>
+      <div style={{ position: 'absolute', bottom: '20px', right: '16px', zIndex: 30, fontSize: '0.82rem' }}>
         <span style={{ color: '#d4980f' }}>{String(current + 1).padStart(2, '0')}</span>
         <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 4px' }}>/</span>
-        <span style={{ color: 'rgba(255,255,255,0.5)' }}>{String(slides.length).padStart(2, '0')}</span>
+        <span style={{ color: 'rgba(255,255,255,0.45)' }}>{String(slides.length).padStart(2, '0')}</span>
       </div>
     </section>
   )
