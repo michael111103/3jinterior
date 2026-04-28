@@ -30,9 +30,7 @@ export default function HeroSlideshow({ slides }: Props) {
 
   useEffect(() => {
     timerRef.current = setTimeout(next, 3000)
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [current, next])
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -42,9 +40,7 @@ export default function HeroSlideshow({ slides }: Props) {
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
     const deltaX = e.changedTouches[0].clientX - touchStartX.current
-    if (Math.abs(deltaX) > 50) {
-      deltaX < 0 ? next() : prev()
-    }
+    if (Math.abs(deltaX) > 50) { deltaX < 0 ? next() : prev() }
     touchStartX.current = null
   }
 
@@ -52,50 +48,91 @@ export default function HeroSlideshow({ slides }: Props) {
 
   return (
     <section
-      className="relative h-[55vh] sm:h-[65vh] md:h-[75vh] min-h-[320px] max-h-[800px] overflow-hidden w-full"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: 'clamp(320px, 70vh, 800px)',
+        overflow: 'hidden',
+        display: 'block',
+      }}
     >
-      {/* Slides background */}
+      {/* Slide backgrounds */}
       {slides.map((s, idx) => (
         <div
           key={s.id}
-          className={`absolute inset-0 transition-opacity duration-700 ${idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: idx === current ? 1 : 0,
+            zIndex: idx === current ? 10 : 0,
+            transition: 'opacity 0.7s ease',
+          }}
         >
           <div
-            className="absolute inset-0 bg-cover bg-center"
             style={{
+              position: 'absolute',
+              inset: 0,
               backgroundImage: `url(${s.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               transform: idx === current ? 'scale(1.05)' : 'scale(1)',
               transition: 'transform 8000ms ease',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-dark-900/90 via-dark-900/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent" />
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-gold-500 to-transparent" />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,8,4,0.88) 0%, rgba(10,8,4,0.45) 55%, rgba(10,8,4,0.15) 100%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,4,0.6) 0%, transparent 60%)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'linear-gradient(to bottom, transparent, #d4980f, transparent)' }} />
         </div>
       ))}
 
-      {/* Slide content */}
-      <div className="relative z-20 h-full flex items-center">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 w-full">
-          <div className="max-w-2xl">
-            <div className={`flex items-center gap-3 mb-3 transition-all duration-700 delay-100 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <div className="h-px w-12 bg-gold-500" />
-              <span className="text-gold-400 text-xs md:text-sm font-body tracking-widest uppercase">Material Interior Premium</span>
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 20, height: '100%', display: 'flex', alignItems: 'center' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
+          <div style={{ maxWidth: '640px' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
+              opacity: isAnimating ? 0 : 1, transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
+              transition: 'all 0.7s ease 0.1s',
+            }}>
+              <div style={{ height: '1px', width: '48px', background: '#d4980f' }} />
+              <span style={{ color: '#d4980f', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Material Interior Premium</span>
             </div>
 
-            <h1 className={`font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 transition-all duration-700 delay-200 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              <span className="text-cream">{slide.title}</span>
+            <h1 style={{
+              fontSize: 'clamp(1.75rem, 5vw, 3.5rem)',
+              fontWeight: 700,
+              color: '#fdf6e3',
+              lineHeight: 1.15,
+              marginBottom: '16px',
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating ? 'translateY(24px)' : 'translateY(0)',
+              transition: 'all 0.7s ease 0.2s',
+            }}>
+              {slide.title}
             </h1>
 
-            <p className={`text-cream/70 text-sm sm:text-base md:text-lg font-body font-light mb-6 leading-relaxed transition-all duration-700 delay-300 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <p style={{
+              color: 'rgba(253,246,227,0.7)',
+              fontSize: 'clamp(0.875rem, 2vw, 1.1rem)',
+              lineHeight: 1.7,
+              marginBottom: '28px',
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
+              transition: 'all 0.7s ease 0.3s',
+            }}>
               {slide.subtitle}
             </p>
 
-            <div className={`flex flex-wrap gap-3 transition-all duration-700 delay-400 ${!isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <div style={{
+              display: 'flex', flexWrap: 'wrap', gap: '12px',
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
+              transition: 'all 0.7s ease 0.4s',
+            }}>
               {slide.cta && slide.ctaLink && (
-                <Link href={slide.ctaLink} className="btn-gold px-6 md:px-8 py-3 rounded-full font-body font-medium text-sm tracking-wide">
+                <Link href={slide.ctaLink} className="btn-gold" style={{ padding: '12px 28px', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none' }}>
                   {slide.cta}
                 </Link>
               )}
@@ -103,7 +140,16 @@ export default function HeroSlideshow({ slides }: Props) {
                 href="https://wa.me/6281385887778"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 md:px-8 py-3 rounded-full font-body font-medium text-sm tracking-wide border border-gold-600/40 text-cream/80 hover:text-gold-400 hover:border-gold-400 transition-all duration-300"
+                style={{
+                  padding: '12px 28px',
+                  borderRadius: '9999px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  border: '1px solid rgba(212,152,15,0.4)',
+                  color: 'rgba(253,246,227,0.85)',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s',
+                }}
               >
                 Konsultasi Gratis
               </a>
@@ -112,43 +158,56 @@ export default function HeroSlideshow({ slides }: Props) {
         </div>
       </div>
 
-      {/* Prev/Next buttons */}
-      <button
-        onClick={prev}
-        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-all duration-300 group"
-        aria-label="Previous slide"
-      >
-        <svg className="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {/* Prev button */}
+      <button onClick={prev} aria-label="Previous" style={{
+        position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)',
+        zIndex: 30, width: '40px', height: '40px', borderRadius: '50%',
+        background: 'rgba(0,0,0,0.4)', border: 'none', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="20" height="20" fill="none" stroke="#fdf6e3" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
         </svg>
       </button>
-      <button
-        onClick={next}
-        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-all duration-300 group"
-        aria-label="Next slide"
-      >
-        <svg className="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+      {/* Next button */}
+      <button onClick={next} aria-label="Next" style={{
+        position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)',
+        zIndex: 30, width: '40px', height: '40px', borderRadius: '50%',
+        background: 'rgba(0,0,0,0.4)', border: 'none', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="20" height="20" fill="none" stroke="#fdf6e3" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
         </svg>
       </button>
 
-      {/* Dots indicator */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+      {/* Dots */}
+      <div style={{
+        position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
+        zIndex: 30, display: 'flex', alignItems: 'center', gap: '8px',
+      }}>
         {slides.map((_, idx) => (
           <button
             key={idx}
             onClick={() => goTo(idx)}
-            className={`transition-all duration-300 rounded-full ${idx === current ? 'w-8 h-2 bg-gold-400' : 'w-2 h-2 bg-white/40 hover:bg-gold-600'}`}
             aria-label={`Slide ${idx + 1}`}
+            style={{
+              border: 'none', cursor: 'pointer', borderRadius: '9999px',
+              transition: 'all 0.3s',
+              width: idx === current ? '32px' : '8px',
+              height: '8px',
+              background: idx === current ? '#d4980f' : 'rgba(255,255,255,0.35)',
+            }}
           />
         ))}
       </div>
 
-      {/* Slide counter */}
-      <div className="hidden md:block absolute bottom-5 right-5 z-30 text-sm" style={{ fontFamily: 'inherit' }}>
-        <span className="text-gold-400">{String(current + 1).padStart(2, '0')}</span>
-        <span className="text-white/30 mx-1">/</span>
-        <span className="text-white/50">{String(slides.length).padStart(2, '0')}</span>
+      {/* Counter */}
+      <div style={{ position: 'absolute', bottom: '20px', right: '20px', zIndex: 30, fontSize: '0.85rem' }}>
+        <span style={{ color: '#d4980f' }}>{String(current + 1).padStart(2, '0')}</span>
+        <span style={{ color: 'rgba(255,255,255,0.3)', margin: '0 4px' }}>/</span>
+        <span style={{ color: 'rgba(255,255,255,0.5)' }}>{String(slides.length).padStart(2, '0')}</span>
       </div>
     </section>
   )
