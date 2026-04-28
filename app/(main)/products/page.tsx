@@ -112,7 +112,7 @@ function ProductsContent() {
                         ))}
                       </div>
                     )}
-                    
+                     <a
                       href={`https://wa.me/6281385887778?text=Halo,%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.name)},%20mohon%20info%20harga%20dan%20ketersediaannya`}
                       target="_blank"
                       rel="noopener noreferrer"
