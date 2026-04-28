@@ -116,25 +116,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── STATS ─── */}
-      <section className="bg-dark-800 border-y border-gold-900/30 py-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {[
-              { n: '500+', l: 'Varian Produk' },
-              { n: '1000+', l: 'Klien Puas' },
-              { n: '5+', l: 'Tahun Berpengalaman' },
-              { n: '34', l: 'Provinsi Terjangkau' },
-            ].map(s => (
-              <div key={s.l}>
-                <p className="font-display text-3xl font-bold gold-text">{s.n}</p>
-                <p className="text-cream/50 text-sm font-body mt-1">{s.l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ─── E-KATALOG ─── */}
       <section id="ekatalog" className="py-20 max-w-4xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
