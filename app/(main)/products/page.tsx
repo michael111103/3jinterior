@@ -1,8 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { categories } from '@/lib/data'
-import { Product } from '@/types'
+import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 
 // Lightbox: tampil gambar full layar
@@ -54,7 +53,7 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 }
 
 // Modal detail produk
-function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
+function ProductModal({ product, categories, onClose }: { product: Product; categories: Category[]; onClose: () => void }) {
   const categoryName = categories.find(c => c.slug === product.category)?.name
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
@@ -201,6 +200,7 @@ function ProductsContent() {
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'all')
   const [search, setSearch] = useState('')
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
@@ -213,8 +213,12 @@ function ProductsContent() {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from('products').select('*').order('name')
-      if (data) setProducts(data)
+      const [{ data: productsData }, { data: categoriesData }] = await Promise.all([
+        supabase.from('products').select('*').order('name'),
+        supabase.from('categories').select('*').order('name'),
+      ])
+      if (productsData) setProducts(productsData)
+      if (categoriesData) setCategories(categoriesData)
       setLoading(false)
     }
     load()
@@ -346,7 +350,7 @@ function ProductsContent() {
       </div>
 
       {selectedProduct && (
-        <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+        <ProductModal product={selectedProduct} categories={categories} onClose={() => setSelectedProduct(null)} />
       )}
     </div>
   )
