@@ -35,14 +35,25 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0 }}>
-            <Image
-              src="/images/logo-3j.PNG"
-              alt="3J Interior"
-              width={64}
-              height={64}
-              style={{ height: '58px', width: 'auto', objectFit: 'contain' }}
-              priority
-            />
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '50%',
+              width: '62px',
+              height: '62px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <Image
+                src="/images/logo-3j.PNG"
+                alt="3J Interior"
+                width={64}
+                height={64}
+                style={{ height: '54px', width: 'auto', objectFit: 'contain' }}
+                priority
+              />
+            </div>
             <div>
               <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fdf6e3', lineHeight: 1, margin: 0 }}>3J Interior</p>
               <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f', marginTop: '3px', margin: 0 }}>Gudang WPC Premium</p>
