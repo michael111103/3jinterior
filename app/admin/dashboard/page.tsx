@@ -1,11 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { articles as initialArticles, siteSettings as initialSettings } from '@/lib/data'
-import { Product, Article, Category } from '@/types'
+import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 
-type Tab = 'overview' | 'products' | 'categories' | 'articles' | 'settings' | 'slideshow'
+type Tab = 'overview' | 'products' | 'categories'
 
 const ADMIN_KEY = '3j_admin'
 
@@ -29,8 +28,6 @@ export default function AdminDashboard() {
   const [newCategory, setNewCategory] = useState<Partial<Category>>({})
 
   // Others
-  const [articles] = useState<Article[]>(initialArticles)
-  const [settings, setSettings] = useState(initialSettings)
   const [toast, setToast] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
   const [saving, setSaving] = useState(false)
@@ -173,11 +170,6 @@ export default function AdminDashboard() {
     setTimeout(() => setToast(''), 3500)
   }
 
-  const handleSaveSettings = () => {
-    localStorage.setItem('3j_settings', JSON.stringify(settings))
-    showToast('Pengaturan berhasil disimpan!')
-  }
-
   const handleLogout = () => {
     localStorage.removeItem(ADMIN_KEY)
     router.push('/admin')
@@ -191,9 +183,6 @@ export default function AdminDashboard() {
     { id: 'overview', label: 'Overview', icon: '📊' },
     { id: 'products', label: 'Produk', icon: '📦' },
     { id: 'categories', label: 'Kategori', icon: '🏷️' },
-    { id: 'articles', label: 'Artikel', icon: '📝' },
-    { id: 'slideshow', label: 'Slideshow', icon: '🖼️' },
-    { id: 'settings', label: 'Pengaturan', icon: '⚙️' },
   ]
 
   return (
@@ -257,11 +246,10 @@ export default function AdminDashboard() {
           <div>
             <h1 className="font-display text-3xl font-bold text-cream mb-2">Dashboard</h1>
             <p className="text-cream/50 font-body text-sm mb-8">Selamat datang di panel admin 3J Interior</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
               {[
                 { label: 'Total Produk', value: products.length, icon: '📦', color: 'from-gold-700 to-gold-900' },
                 { label: 'Kategori', value: categories.length, icon: '🏷️', color: 'from-blue-800 to-blue-900' },
-                { label: 'Artikel', value: articles.length, icon: '📝', color: 'from-purple-800 to-purple-900' },
                 { label: 'Landing Pages', value: categories.length, icon: '🎯', color: 'from-green-800 to-green-900' },
               ].map(stat => (
                 <div key={stat.label} className={`glass-card rounded-xl p-5 bg-gradient-to-br ${stat.color} bg-opacity-20`}>
@@ -294,7 +282,6 @@ export default function AdminDashboard() {
                   {[
                     { label: 'Tambah Produk Baru', action: () => { setTab('products'); setShowAddProduct(true) } },
                     { label: 'Tambah Kategori Baru', action: () => { setTab('categories'); setShowAddCategory(true) } },
-                    { label: 'Edit Pengaturan Website', action: () => setTab('settings') },
                     { label: 'Buka Website', action: () => window.open('/', '_blank') },
                   ].map(item => (
                     <button key={item.label} onClick={item.action} className="w-full text-left px-4 py-3 glass-card rounded-xl text-cream/70 hover:text-gold-400 font-body text-sm transition-all duration-200 flex items-center justify-between group">
@@ -436,7 +423,7 @@ export default function AdminDashboard() {
                       <tr className="border-b border-gold-900/30">
                         <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Produk</th>
                         <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden md:table-cell">Kategori</th>
-                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden lg:table-cell">Ukuran</th>
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widests uppercase hidden lg:table-cell">Ukuran</th>
                         <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widests uppercase">Featured</th>
                         <th className="text-right px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Aksi</th>
                       </tr>
@@ -597,83 +584,6 @@ export default function AdminDashboard() {
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {/* ── ARTICLES ── */}
-        {tab === 'articles' && (
-          <div>
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="font-display text-3xl font-bold text-cream">Manajemen Artikel</h1>
-                <p className="text-cream/50 font-body text-sm mt-1">{articles.length} artikel tersedia</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {articles.map(article => (
-                <div key={article.id} className="glass-card rounded-xl p-4 flex gap-4">
-                  <div className="w-16 h-14 rounded-lg bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${article.image})` }} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-cream text-sm font-body font-medium line-clamp-1">{article.title}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      {article.tags.slice(0, 1).map(t => (
-                        <span key={t} className="text-xs font-body px-2 py-0.5 bg-gold-900/20 text-gold-500 rounded-full border border-gold-800/30">{t}</span>
-                      ))}
-                      <span className="text-cream/30 text-xs">{new Date(article.date).toLocaleDateString('id-ID')}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start shrink-0">
-                    <a href={`/articles/${article.slug}`} target="_blank" className="text-xs px-2 py-1.5 border border-gold-800/40 text-gold-400 hover:bg-gold-900/20 rounded-lg font-body transition-colors">View</a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── SLIDESHOW ── */}
-        {tab === 'slideshow' && (
-          <div>
-            <h1 className="font-display text-3xl font-bold text-cream mb-2">Manajemen Slideshow</h1>
-            <p className="text-cream/50 font-body text-sm mb-8">Kelola gambar dan konten slideshow halaman utama</p>
-            <div className="glass-card rounded-xl p-6">
-              <p className="text-cream/60 font-body text-sm">
-                Slideshow saat ini menggunakan slide dari <code className="text-gold-400 bg-dark-700 px-1.5 py-0.5 rounded text-xs">lib/data.ts</code>. Update URL gambar di file tersebut untuk mengubah slide.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ── SETTINGS ── */}
-        {tab === 'settings' && (
-          <div>
-            <h1 className="font-display text-3xl font-bold text-cream mb-2">Pengaturan Website</h1>
-            <p className="text-cream/50 font-body text-sm mb-8">Ubah informasi kontak dan teks website</p>
-            <div className="glass-card rounded-xl p-6 max-w-2xl">
-              <div className="space-y-5">
-                {[
-                  { label: 'Nama Perusahaan', key: 'companyName' as const },
-                  { label: 'Tagline', key: 'tagline' as const },
-                  { label: 'Nomor Telepon / WhatsApp', key: 'phone' as const },
-                  { label: 'Email', key: 'email' as const },
-                  { label: 'Alamat', key: 'address' as const },
-                  { label: 'Link WhatsApp (wa.me/...)', key: 'whatsappLink' as const },
-                  { label: 'Link Google Maps', key: 'googleMapsLink' as const },
-                ].map(field => (
-                  <div key={field.key}>
-                    <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">{field.label}</label>
-                    {field.key === 'tagline' ? (
-                      <textarea value={settings[field.key]} onChange={e => setSettings({ ...settings, [field.key]: e.target.value })}
-                        rows={2} className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors resize-none" />
-                    ) : (
-                      <input type="text" value={settings[field.key]} onChange={e => setSettings({ ...settings, [field.key]: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" />
-                    )}
-                  </div>
-                ))}
-                <button onClick={handleSaveSettings} className="btn-gold px-8 py-3 rounded-xl font-body font-medium mt-2">Simpan Pengaturan</button>
-              </div>
-            </div>
           </div>
         )}
       </main>
