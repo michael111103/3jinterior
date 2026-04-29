@@ -139,7 +139,7 @@ export const slides: SlideItem[] = [
   { id: 'slide-1', image: '/products/slide1.jpeg', title: 'Wallpanel WPC Premium', subtitle: 'Transformasi ruangan Anda dengan 14 pilihan warna panel WPC berkualitas tinggi', cta: 'Lihat Produk', ctaLink: '/products' },
   { id: 'slide-2', image: '/products/slide2.jpeg', title: 'UV Marmer Eksklusif', subtitle: 'Panel UV Marmer mewah 1.22m x 2.9m dengan 7 motif pilihan yang memukau', cta: 'Konsultasi Gratis', ctaLink: 'https://wa.me/6281385887778' },
   { id: 'slide-3', image: '/products/slide3.jpeg', title: 'WPC Decking Outdoor', subtitle: 'Decking WPC tahan cuaca untuk taman dan teras impian Anda', cta: 'Hubungi Kami', ctaLink: 'https://wa.me/6281385887778' },
-  { id: 'slide-4', image: '/products/slide4.png', title: 'Harga Grosir Langsung Gudang', subtitle: 'Dapatkan harga terbaik untuk kebutuhan material interior proyek Anda', cta: 'Dapatkan Penawaran', ctaLink: 'https://wa.me/6281385887778' },
+  { id: 'slide-4', image: '/products/slide4.jpeg', title: 'Harga Grosir Langsung Gudang', subtitle: 'Dapatkan harga terbaik untuk kebutuhan material interior proyek Anda', cta: 'Dapatkan Penawaran', ctaLink: 'https://wa.me/6281385887778' },
   { id: 'slide-5', image: '/products/slide5.jpeg', title: 'Wallboard PVC Premium', subtitle: 'Wallboard tersedia lebar 40cm dan 60cm untuk berbagai kebutuhan renovasi', cta: 'Lihat Koleksi', ctaLink: '/products' },
 ]
 
