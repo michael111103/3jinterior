@@ -22,7 +22,6 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
-      {/* Tombol tutup */}
       <button
         onClick={onClose}
         style={{
@@ -38,7 +37,6 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
         </svg>
       </button>
 
-      {/* Gambar full — tidak terpotong */}
       <img
         src={src}
         alt={alt}
@@ -96,7 +94,6 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
             flexDirection: 'column',
           }}
         >
-          {/* Tombol tutup */}
           <button
             onClick={onClose}
             style={{
@@ -112,7 +109,6 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
             </svg>
           </button>
 
-          {/* Foto produk — klik untuk buka lightbox */}
           <div
             onClick={() => setLightboxOpen(true)}
             style={{
@@ -126,7 +122,6 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
               alt={product.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
-            {/* Hint icon zoom */}
             <div style={{
               position: 'absolute', bottom: '10px', right: '10px',
               background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
@@ -140,7 +135,6 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
             </div>
           </div>
 
-          {/* Info produk */}
           <div style={{ padding: '24px' }}>
             <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f' }}>
               {categoryName}
@@ -179,7 +173,7 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 gap: '8px', padding: '13px 24px', borderRadius: '9999px',
-                fontWeight: 500, fontSize: '0.9rem', textDecoration: 'none',
+                fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none',
               }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -191,7 +185,6 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
         </div>
       </div>
 
-      {/* Lightbox gambar full */}
       {lightboxOpen && (
         <ImageLightbox
           src={product.image}
@@ -205,12 +198,18 @@ function ProductModal({ product, onClose }: { product: Product; onClose: () => v
 
 function ProductsContent() {
   const searchParams = useSearchParams()
-  const initialCategory = searchParams.get('category') || 'all'
-  const [activeCategory, setActiveCategory] = useState(initialCategory)
+  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'all')
   const [search, setSearch] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+
+  // ✅ REVISI: watch searchParams supaya klik footer dari halaman produk juga update kategori
+  useEffect(() => {
+    const category = searchParams.get('category') || 'all'
+    setActiveCategory(category)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [searchParams])
 
   useEffect(() => {
     const load = async () => {
@@ -298,7 +297,6 @@ function ProductsContent() {
                   className="glass-card rounded-xl overflow-hidden product-card group cursor-pointer"
                   onClick={() => setSelectedProduct(product)}
                 >
-                  {/* Foto — tanpa overlay gelap */}
                   <div className="aspect-[4/3] relative overflow-hidden">
                     <div
                       className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
@@ -307,7 +305,6 @@ function ProductsContent() {
                     <span className="absolute top-2 left-2 bg-dark-800/80 backdrop-blur-sm text-gold-400 text-xs font-body px-2.5 py-1 rounded-full border border-gold-800/40">
                       {categories.find(c => c.slug === product.category)?.name}
                     </span>
-                    {/* Ikon zoom muncul saat hover */}
                     <span className="absolute top-2 right-2 bg-dark-800/70 backdrop-blur-sm text-cream/80 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                       <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -348,7 +345,6 @@ function ProductsContent() {
         )}
       </div>
 
-      {/* Modal */}
       {selectedProduct && (
         <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       )}
