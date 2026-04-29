@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { categories } from '@/lib/data'
 
 export default function Footer() {
@@ -10,12 +11,16 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center">
-                <span className="text-dark-900 font-display font-bold text-sm">3J</span>
-              </div>
+              <Image
+                src="/images/logo-3j.PNG"
+                alt="3J Interior"
+                width={64}
+                height={64}
+                style={{ height: '52px', width: 'auto', objectFit: 'contain' }}
+              />
               <div>
-                <p className="font-display font-semibold text-lg gold-text">3J Interior</p>
-                <p className="text-gold-600 text-xs tracking-widest uppercase">Gudang WPC Premium</p>
+                <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fdf6e3', lineHeight: 1, margin: 0 }}>3J Interior</p>
+                <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f', marginTop: '3px', margin: 0 }}>Gudang WPC Premium</p>
               </div>
             </div>
             <p className="text-cream/60 text-sm leading-relaxed font-body">
