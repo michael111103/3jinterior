@@ -63,6 +63,7 @@ export default function HomePage() {
                   className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                   style={{ backgroundImage: `url(${cat.image})` }}
                 />
+                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-dark-900/70 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <h3 className="font-display text-xl font-semibold text-cream group-hover:gold-text transition-all duration-300">{cat.name}</h3>
@@ -110,6 +111,7 @@ export default function HomePage() {
                     className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                     style={{ backgroundImage: `url(${product.image})` }}
                   />
+                  <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-dark-900/60 to-transparent" />
                   <span className="absolute top-3 left-3 bg-gold-600/90 text-cream text-xs font-body px-3 py-1 rounded-full">
                     {categories.find(c => c.slug === product.category)?.name}
                   </span>
@@ -245,6 +247,7 @@ export default function HomePage() {
                   className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                   style={{ backgroundImage: `url(${article.image})` }}
                 />
+                <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-dark-900/50 to-transparent" />
               </div>
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-3">
