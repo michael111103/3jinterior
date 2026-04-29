@@ -41,7 +41,6 @@ const faqs = [
   { q: 'Berapa minimum order?', a: 'Tidak ada minimum order. Kami melayani pembelian satuan hingga grosir dalam jumlah besar.' },
   { q: 'Apakah bisa dikirim ke luar Jakarta?', a: 'Ya, kami melayani pengiriman ke seluruh Indonesia melalui ekspedisi terpercaya.' },
   { q: 'Berapa lama estimasi pengiriman?', a: 'Jakarta dan sekitarnya 1-2 hari. Luar Jawa 3-7 hari kerja tergantung lokasi.' },
-  { q: 'Apakah ada garansi produk?', a: 'Ya, semua produk kami bergaransi. Kami juga memberikan after-sales service jika ada masalah.' },
 ]
 
 const WaIcon = () => (
@@ -211,7 +210,7 @@ export default function LandingPage() {
               Spesialis Material <span className="gold-text">WPC Premium</span>
             </h2>
             <p className="text-cream/65 font-body leading-relaxed mb-4">
-              3J Interior adalah distributor material WPC (Wood Plastic Composite) terpercaya dengan pengalaman lebih dari 5 tahun melayani kontraktor, interior designer, dan developer properti di seluruh Indonesia.
+              3J Interior adalah distributor material WPC (Wood Plastic Composite) terpercaya yang melayani pengiriman ke seluruh Indonesia untuk kontraktor, interior designer, dan developer properti.
             </p>
             <p className="text-cream/65 font-body leading-relaxed mb-6">
               Kami menyediakan berbagai produk berkualitas tinggi mulai dari Wallpanel WPC, Wallboard, Decking, Holo Indoor & Outdoor, UV Marmer, List Aluminium, hingga PU Stone — semua tersedia dengan harga kompetitif langsung dari gudang.
@@ -232,8 +231,8 @@ export default function LandingPage() {
               style={{ backgroundImage: `url(https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&q=80)` }}
             />
             <div className="absolute -bottom-4 -left-4 glass-card rounded-xl px-5 py-4" style={{ border: '1px solid rgba(212,152,15,0.4)' }}>
-              <p className="font-display text-2xl font-bold gold-text">5+ Tahun</p>
-              <p className="text-cream/60 text-xs font-body">Melayani Indonesia</p>
+              <p className="font-display text-lg font-bold gold-text leading-snug">Melayani Pengiriman</p>
+              <p className="text-cream/60 text-xs font-body">ke Seluruh Indonesia</p>
             </div>
           </div>
         </div>
