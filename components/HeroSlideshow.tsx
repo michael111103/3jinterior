@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
-import Link from 'next/link'
 import { SlideItem } from '@/types'
 
 interface Props {
@@ -52,8 +51,6 @@ export default function HeroSlideshow({ slides }: Props) {
     touchStartX.current = null
   }
 
-  const slide = slides[current]
-
   return (
     <section
       onTouchStart={handleTouchStart}
@@ -87,98 +84,10 @@ export default function HeroSlideshow({ slides }: Props) {
               backgroundImage: `url(${s.image})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transform: idx === current ? 'scale(1.05)' : 'scale(1)',
-              transition: 'transform 8000ms ease',
             }}
           />
-          {/* Shadow hanya di desktop */}
-          {!isMobile && (
-            <>
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,8,4,0.88) 0%, rgba(10,8,4,0.45) 55%, rgba(10,8,4,0.15) 100%)' }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,4,0.6) 0%, transparent 60%)' }} />
-            </>
-          )}
-          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'linear-gradient(to bottom, transparent, #d4980f, transparent)' }} />
         </div>
       ))}
-
-      {/* Content — disembunyikan di mobile */}
-      {!isMobile && (
-        <div style={{ position: 'relative', zIndex: 20, height: '100%', display: 'flex', alignItems: 'center' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', width: '100%' }}>
-            <div style={{ maxWidth: '640px' }}>
-
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
-                opacity: isAnimating ? 0 : 1,
-                transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
-                transition: 'all 0.7s ease 0.1s',
-              }}>
-                <div style={{ height: '1px', width: '48px', background: '#d4980f' }} />
-                <span style={{ color: '#d4980f', fontSize: '0.72rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Material Interior Premium</span>
-              </div>
-
-              <h1 style={{
-                fontSize: 'clamp(1.6rem, 5vw, 3.5rem)',
-                fontWeight: 700,
-                color: '#fdf6e3',
-                lineHeight: 1.15,
-                marginBottom: '16px',
-                opacity: isAnimating ? 0 : 1,
-                transform: isAnimating ? 'translateY(24px)' : 'translateY(0)',
-                transition: 'all 0.7s ease 0.2s',
-              }}>
-                {slide.title}
-              </h1>
-
-              <p style={{
-                color: 'rgba(253,246,227,0.7)',
-                fontSize: 'clamp(0.85rem, 2vw, 1.05rem)',
-                lineHeight: 1.7,
-                marginBottom: '28px',
-                opacity: isAnimating ? 0 : 1,
-                transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
-                transition: 'all 0.7s ease 0.3s',
-              }}>
-                {slide.subtitle}
-              </p>
-
-              <div style={{
-                display: 'flex', flexWrap: 'wrap', gap: '12px',
-                opacity: isAnimating ? 0 : 1,
-                transform: isAnimating ? 'translateY(16px)' : 'translateY(0)',
-                transition: 'all 0.7s ease 0.4s',
-              }}>
-                {slide.cta && slide.ctaLink && (
-                  <Link
-                    href={slide.ctaLink}
-                    className="btn-gold"
-                    style={{ padding: '11px 28px', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none' }}
-                  >
-                    {slide.cta}
-                  </Link>
-                )}
-                <a
-                  href="https://wa.me/6281385887778"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    padding: '11px 28px',
-                    borderRadius: '9999px',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    border: '1px solid rgba(212,152,15,0.4)',
-                    color: 'rgba(253,246,227,0.85)',
-                    textDecoration: 'none',
-                  }}
-                >
-                  Konsultasi Gratis
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Prev */}
       <button onClick={prev} aria-label="Previous" style={{
