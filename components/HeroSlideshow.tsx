@@ -91,8 +91,13 @@ export default function HeroSlideshow({ slides }: Props) {
               transition: 'transform 8000ms ease',
             }}
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,8,4,0.88) 0%, rgba(10,8,4,0.45) 55%, rgba(10,8,4,0.15) 100%)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,4,0.6) 0%, transparent 60%)' }} />
+          {/* Shadow hanya di desktop */}
+          {!isMobile && (
+            <>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,8,4,0.88) 0%, rgba(10,8,4,0.45) 55%, rgba(10,8,4,0.15) 100%)' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,4,0.6) 0%, transparent 60%)' }} />
+            </>
+          )}
           <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'linear-gradient(to bottom, transparent, #d4980f, transparent)' }} />
         </div>
       ))}
