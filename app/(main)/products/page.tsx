@@ -5,120 +5,201 @@ import { categories } from '@/lib/data'
 import { Product } from '@/types'
 import { supabase } from '@/lib/supabase'
 
-// Modal detail produk
-function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
-  const categoryName = categories.find(c => c.slug === product.category)?.name
-
+// Lightbox: tampil gambar full layar
+function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
     const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handleKey)
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', handleKey)
-    }
+    return () => window.removeEventListener('keydown', handleKey)
   }, [onClose])
 
   return (
     <div
       onClick={onClose}
       style={{
-        position: 'fixed', inset: 0, zIndex: 99999,
-        background: 'rgba(0,0,0,0.85)',
+        position: 'fixed', inset: 0, zIndex: 999999,
+        background: 'rgba(0,0,0,0.95)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '16px',
       }}
     >
-      <div
-        onClick={e => e.stopPropagation()}
+      {/* Tombol tutup */}
+      <button
+        onClick={onClose}
         style={{
-          background: '#1a1507',
-          border: '1px solid rgba(212,152,15,0.3)',
-          borderRadius: '16px',
-          width: '100%',
-          maxWidth: '820px',
-          maxHeight: '90vh',
-          overflow: 'auto',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
+          position: 'fixed', top: '16px', right: '16px', zIndex: 1000000,
+          width: '44px', height: '44px', borderRadius: '50%',
+          background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(212,152,15,0.5)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fdf6e3',
         }}
       >
-        {/* Tombol tutup */}
-        <button
-          onClick={onClose}
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      {/* Gambar full — tidak terpotong */}
+      <img
+        src={src}
+        alt={alt}
+        onClick={e => e.stopPropagation()}
+        style={{
+          maxWidth: '95vw',
+          maxHeight: '95vh',
+          objectFit: 'contain',
+          borderRadius: '8px',
+          display: 'block',
+        }}
+      />
+    </div>
+  )
+}
+
+// Modal detail produk
+function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
+  const categoryName = categories.find(c => c.slug === product.category)?.name
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !lightboxOpen) onClose() }
+    window.addEventListener('keydown', handleKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKey)
+    }
+  }, [onClose, lightboxOpen])
+
+  return (
+    <>
+      <div
+        onClick={onClose}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 99999,
+          background: 'rgba(0,0,0,0.85)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '16px',
+        }}
+      >
+        <div
+          onClick={e => e.stopPropagation()}
           style={{
-            position: 'absolute', top: '12px', right: '12px', zIndex: 10,
-            width: '36px', height: '36px', borderRadius: '50%',
-            background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(212,152,15,0.3)',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fdf6e3',
+            background: '#1a1507',
+            border: '1px solid rgba(212,152,15,0.3)',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '820px',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-
-        {/* Foto produk — jernih tanpa overlay gelap */}
-        <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: '16px 16px 0 0', flexShrink: 0 }}>
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        </div>
-
-        {/* Info produk */}
-        <div style={{ padding: '24px' }}>
-          <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f' }}>
-            {categoryName}
-          </span>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fdf6e3', lineHeight: 1.3, margin: '8px 0 12px' }}>
-            {product.name}
-          </h2>
-          <p style={{ color: 'rgba(253,246,227,0.65)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '20px' }}>
-            {product.description}
-          </p>
-
-          {product.sizes && product.sizes.length > 0 && (
-            <div style={{ marginBottom: '20px' }}>
-              <p style={{ color: '#d4980f', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Ukuran Tersedia
-              </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {product.sizes.map((size: string) => (
-                  <span key={size} style={{
-                    fontSize: '0.8rem', padding: '4px 10px',
-                    background: 'rgba(212,152,15,0.1)', border: '1px solid rgba(212,152,15,0.3)',
-                    color: '#d4980f', borderRadius: '6px',
-                  }}>
-                    {size}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <a
-            href={`https://wa.me/6281385887778?text=Halo,%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.name)},%20mohon%20info%20harga%20dan%20ketersediaannya`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-gold"
+          {/* Tombol tutup */}
+          <button
+            onClick={onClose}
             style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: '8px', padding: '13px 24px', borderRadius: '9999px',
-              fontWeight: 500, fontSize: '0.9rem', textDecoration: 'none',
+              position: 'absolute', top: '12px', right: '12px', zIndex: 10,
+              width: '36px', height: '36px', borderRadius: '50%',
+              background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(212,152,15,0.3)',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fdf6e3',
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
             </svg>
-            Tanya Harga via WhatsApp
-          </a>
+          </button>
+
+          {/* Foto produk — klik untuk buka lightbox */}
+          <div
+            onClick={() => setLightboxOpen(true)}
+            style={{
+              width: '100%', aspectRatio: '16/9', overflow: 'hidden',
+              borderRadius: '16px 16px 0 0', flexShrink: 0,
+              cursor: 'zoom-in', position: 'relative',
+            }}
+          >
+            <img
+              src={product.image}
+              alt={product.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            {/* Hint icon zoom */}
+            <div style={{
+              position: 'absolute', bottom: '10px', right: '10px',
+              background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+              padding: '5px 9px', display: 'flex', alignItems: 'center', gap: '5px',
+              color: '#fdf6e3', fontSize: '0.72rem',
+            }}>
+              <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              Klik untuk perbesar
+            </div>
+          </div>
+
+          {/* Info produk */}
+          <div style={{ padding: '24px' }}>
+            <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f' }}>
+              {categoryName}
+            </span>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fdf6e3', lineHeight: 1.3, margin: '8px 0 12px' }}>
+              {product.name}
+            </h2>
+            <p style={{ color: 'rgba(253,246,227,0.65)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '20px' }}>
+              {product.description}
+            </p>
+
+            {product.sizes && product.sizes.length > 0 && (
+              <div style={{ marginBottom: '20px' }}>
+                <p style={{ color: '#d4980f', fontSize: '0.72rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  Ukuran Tersedia
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {product.sizes.map((size: string) => (
+                    <span key={size} style={{
+                      fontSize: '0.8rem', padding: '4px 10px',
+                      background: 'rgba(212,152,15,0.1)', border: '1px solid rgba(212,152,15,0.3)',
+                      color: '#d4980f', borderRadius: '6px',
+                    }}>
+                      {size}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <a
+              href={`https://wa.me/6281385887778?text=Halo,%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.name)},%20mohon%20info%20harga%20dan%20ketersediaannya`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: '8px', padding: '13px 24px', borderRadius: '9999px',
+                fontWeight: 500, fontSize: '0.9rem', textDecoration: 'none',
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+              </svg>
+              Tanya Harga via WhatsApp
+            </a>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Lightbox gambar full */}
+      {lightboxOpen && (
+        <ImageLightbox
+          src={product.image}
+          alt={product.name}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
+    </>
   )
 }
 
