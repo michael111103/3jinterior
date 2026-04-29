@@ -36,15 +36,15 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Kategori Produk */}
+          {/* Kategori Produk - 2 kolom */}
           <div>
             <h4 className="font-display text-gold-400 text-lg mb-4 font-semibold">Kategori Produk</h4>
-            <ul className="space-y-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
               {categories.map((cat) => (
                 <li key={cat.id}>
                   <Link href={`/products?category=${cat.slug}`}
                     className="text-cream/60 hover:text-gold-400 text-sm font-body transition-colors flex items-center gap-2 group">
-                    <span className="text-gold-700 group-hover:text-gold-400 transition-colors">◆</span>
+                    <span className="text-gold-700 group-hover:text-gold-400 transition-colors shrink-0">◆</span>
                     {cat.name}
                   </Link>
                 </li>
