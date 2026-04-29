@@ -317,7 +317,7 @@ function ProductsContent() {
 
                   <div className="p-4">
                     <h3 className="font-display text-base font-semibold text-cream group-hover:text-gold-400 transition-colors leading-snug">{product.name}</h3>
-                    <p className="text-cream/50 text-xs font-body mt-1.5 line-clamp-2 leading-relaxed">{product.description}</p>
+                    <p className="text-cream/50 text-sm sm:text-xs font-body mt-1.5 line-clamp-2 leading-relaxed">{product.description}</p>
                     {product.sizes && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {product.sizes.map((size: string) => (
