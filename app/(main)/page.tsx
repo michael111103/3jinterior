@@ -63,7 +63,7 @@ export default function HomePage() {
                   className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                   style={{ backgroundImage: `url(${cat.image})` }}
                 />
-                <div className="absolute bottom-0 left-0 right-0 h-2/5 bg-gradient-to-t from-dark-900/85 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-dark-900/95 to-transparent" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <h3 className="font-display text-xl font-semibold text-cream group-hover:gold-text transition-all duration-300">{cat.name}</h3>
