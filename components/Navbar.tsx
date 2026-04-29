@@ -38,8 +38,8 @@ export default function Navbar() {
             <div style={{
               background: '#ffffff',
               borderRadius: '50%',
-              width: '62px',
-              height: '62px',
+              width: '50px',
+              height: '50px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
