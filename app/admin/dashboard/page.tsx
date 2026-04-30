@@ -5,7 +5,14 @@ import Image from 'next/image'
 import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 
-type Tab = 'overview' | 'products' | 'categories'
+type Tab = 'overview' | 'products' | 'categories' | 'ekatalog'
+
+type EKatalog = {
+  id: string
+  label: string
+  link: string
+  sort_order: number
+}
 
 const ADMIN_KEY = '3j_admin'
 
@@ -182,6 +189,13 @@ export default function AdminDashboard() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [newCategory, setNewCategory] = useState<Partial<Category>>({})
 
+  // E-Katalog
+  const [ekatalogList, setEkatalogList] = useState<EKatalog[]>([])
+  const [loadingEkatalog, setLoadingEkatalog] = useState(true)
+  const [showAddEkatalog, setShowAddEkatalog] = useState(false)
+  const [editingEkatalog, setEditingEkatalog] = useState<EKatalog | null>(null)
+  const [newEkatalog, setNewEkatalog] = useState<Partial<EKatalog>>({})
+
   // Others
   const [toast, setToast] = useState('')
   const [toastType, setToastType] = useState<'success' | 'error'>('success')
@@ -194,6 +208,7 @@ export default function AdminDashboard() {
       else {
         loadProducts()
         loadCategories()
+        loadEkatalog()
       }
     }
   }, [router])
@@ -318,6 +333,62 @@ export default function AdminDashboard() {
     }
   }
 
+  // ─── E-KATALOG ──────────────────────────────────────────
+  const loadEkatalog = async () => {
+    setLoadingEkatalog(true)
+    const { data, error } = await supabase.from('ekatalog').select('*').order('sort_order')
+    if (error) showToast('Gagal memuat e-katalog: ' + error.message, 'error')
+    else setEkatalogList(data || [])
+    setLoadingEkatalog(false)
+  }
+
+  const handleAddEkatalog = async () => {
+    if (!newEkatalog.label || !newEkatalog.link) return
+    setSaving(true)
+    const item: EKatalog = {
+      id: `ek-${Date.now()}`,
+      label: newEkatalog.label || '',
+      link: newEkatalog.link || '',
+      sort_order: ekatalogList.length,
+    }
+    const { error } = await supabase.from('ekatalog').insert([item])
+    if (error) showToast('Gagal menambah e-katalog: ' + error.message, 'error')
+    else {
+      showToast('E-Katalog berhasil ditambahkan!')
+      setNewEkatalog({})
+      setShowAddEkatalog(false)
+      await loadEkatalog()
+    }
+    setSaving(false)
+  }
+
+  const handleUpdateEkatalog = async () => {
+    if (!editingEkatalog) return
+    setSaving(true)
+    const { error } = await supabase.from('ekatalog').update({
+      label: editingEkatalog.label,
+      link: editingEkatalog.link,
+      sort_order: editingEkatalog.sort_order,
+    }).eq('id', editingEkatalog.id)
+    if (error) showToast('Gagal update e-katalog: ' + error.message, 'error')
+    else {
+      showToast('E-Katalog berhasil diupdate!')
+      setEditingEkatalog(null)
+      await loadEkatalog()
+    }
+    setSaving(false)
+  }
+
+  const handleDeleteEkatalog = async (id: string) => {
+    if (!confirm('Yakin hapus item e-katalog ini?')) return
+    const { error } = await supabase.from('ekatalog').delete().eq('id', id)
+    if (error) showToast('Gagal hapus e-katalog: ' + error.message, 'error')
+    else {
+      showToast('E-Katalog berhasil dihapus!')
+      setEkatalogList(ekatalogList.filter(e => e.id !== id))
+    }
+  }
+
   // ─── HELPERS ────────────────────────────────────────────
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast(msg)
@@ -338,6 +409,7 @@ export default function AdminDashboard() {
     { id: 'overview', label: 'Overview', icon: '📊' },
     { id: 'products', label: 'Produk', icon: '📦' },
     { id: 'categories', label: 'Kategori', icon: '🏷️' },
+    { id: 'ekatalog', label: 'E-Katalog', icon: '📋' },
   ]
 
   return (
@@ -412,7 +484,7 @@ export default function AdminDashboard() {
               {[
                 { label: 'Total Produk', value: products.length, icon: '📦', color: 'from-gold-700 to-gold-900' },
                 { label: 'Kategori', value: categories.length, icon: '🏷️', color: 'from-blue-800 to-blue-900' },
-                { label: 'Landing Pages', value: categories.length, icon: '🎯', color: 'from-green-800 to-green-900' },
+                { label: 'E-Katalog', value: ekatalogList.length, icon: '📋', color: 'from-green-800 to-green-900' },
               ].map(stat => (
                 <div key={stat.label} className={`glass-card rounded-xl p-5 bg-gradient-to-br ${stat.color} bg-opacity-20`}>
                   <span className="text-2xl">{stat.icon}</span>
@@ -444,6 +516,7 @@ export default function AdminDashboard() {
                   {[
                     { label: 'Tambah Produk Baru', action: () => { setTab('products'); setShowAddProduct(true) } },
                     { label: 'Tambah Kategori Baru', action: () => { setTab('categories'); setShowAddCategory(true) } },
+                    { label: 'Kelola E-Katalog', action: () => setTab('ekatalog') },
                     { label: 'Buka Website', action: () => window.open('/', '_blank') },
                   ].map(item => (
                     <button key={item.label} onClick={item.action} className="w-full text-left px-4 py-3 glass-card rounded-xl text-cream/70 hover:text-gold-400 font-body text-sm transition-all duration-200 flex items-center justify-between group">
@@ -755,6 +828,153 @@ export default function AdminDashboard() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── E-KATALOG ── */}
+        {tab === 'ekatalog' && (
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="font-display text-3xl font-bold text-cream">Manajemen E-Katalog</h1>
+                <p className="text-cream/50 font-body text-sm mt-1">{ekatalogList.length} item katalog di Supabase</p>
+              </div>
+              <button onClick={() => setShowAddEkatalog(true)} className="btn-gold px-5 py-2.5 rounded-xl font-body text-sm flex items-center gap-2">
+                + Tambah Item
+              </button>
+            </div>
+
+            {/* Modal Tambah E-Katalog */}
+            {showAddEkatalog && (
+              <div className="fixed inset-0 bg-dark-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="glass-card rounded-2xl p-6 w-full max-w-lg" style={{ border: '1px solid rgba(212,152,15,0.3)' }}>
+                  <h3 className="font-display text-xl font-bold text-cream mb-5">Tambah Item E-Katalog</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Nama / Label *</label>
+                      <input
+                        type="text"
+                        value={newEkatalog.label || ''}
+                        onChange={e => setNewEkatalog({ ...newEkatalog, label: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+                        placeholder="cth: Wallboard"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Link Tujuan *</label>
+                      <input
+                        type="url"
+                        value={newEkatalog.link || ''}
+                        onChange={e => setNewEkatalog({ ...newEkatalog, link: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+                        placeholder="https://drive.google.com/..."
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-3 mt-6">
+                    <button onClick={handleAddEkatalog} disabled={saving} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm disabled:opacity-60">
+                      {saving ? 'Menyimpan...' : 'Simpan'}
+                    </button>
+                    <button onClick={() => { setShowAddEkatalog(false); setNewEkatalog({}) }} className="flex-1 py-2.5 rounded-xl font-body text-sm border border-cream/20 text-cream/60 hover:text-cream transition-colors">Batal</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Edit E-Katalog */}
+            {editingEkatalog && (
+              <div className="fixed inset-0 bg-dark-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="glass-card rounded-2xl p-6 w-full max-w-lg" style={{ border: '1px solid rgba(212,152,15,0.3)' }}>
+                  <h3 className="font-display text-xl font-bold text-cream mb-5">Edit Item E-Katalog</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Nama / Label</label>
+                      <input
+                        type="text"
+                        value={editingEkatalog.label}
+                        onChange={e => setEditingEkatalog({ ...editingEkatalog, label: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Link Tujuan</label>
+                      <input
+                        type="url"
+                        value={editingEkatalog.link}
+                        onChange={e => setEditingEkatalog({ ...editingEkatalog, link: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Urutan (angka kecil = tampil dulu)</label>
+                      <input
+                        type="number"
+                        value={editingEkatalog.sort_order}
+                        onChange={e => setEditingEkatalog({ ...editingEkatalog, sort_order: parseInt(e.target.value) || 0 })}
+                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-3 mt-6">
+                    <button onClick={handleUpdateEkatalog} disabled={saving} className="btn-gold flex-1 py-2.5 rounded-xl font-body text-sm disabled:opacity-60">
+                      {saving ? 'Menyimpan...' : 'Update'}
+                    </button>
+                    <button onClick={() => setEditingEkatalog(null)} className="flex-1 py-2.5 rounded-xl font-body text-sm border border-cream/20 text-cream/60 hover:text-cream transition-colors">Batal</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* List E-Katalog */}
+            <div className="glass-card rounded-xl overflow-hidden">
+              {loadingEkatalog ? (
+                <div className="p-12 text-center"><p className="text-cream/40 font-body">Memuat e-katalog dari Supabase...</p></div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gold-900/30">
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Nama / Label</th>
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden md:table-cell">Link Tujuan</th>
+                        <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Urutan</th>
+                        <th className="text-right px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ekatalogList.map(item => (
+                        <tr key={item.id} className="border-b border-gold-900/10 hover:bg-dark-700/30 transition-colors">
+                          <td className="px-5 py-3">
+                            <p className="text-cream text-sm font-body">{item.label}</p>
+                          </td>
+                          <td className="px-5 py-3 hidden md:table-cell">
+                            <a
+                              href={item.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gold-400/70 hover:text-gold-400 text-xs font-body truncate block max-w-xs transition-colors"
+                            >
+                              {item.link}
+                            </a>
+                          </td>
+                          <td className="px-5 py-3 text-center">
+                            <span className="text-cream/50 text-xs font-body">{item.sort_order}</span>
+                          </td>
+                          <td className="px-5 py-3">
+                            <div className="flex items-center justify-end gap-2">
+                              <button onClick={() => setEditingEkatalog(item)} className="text-xs px-3 py-1.5 border border-gold-800/40 text-gold-400 hover:bg-gold-900/20 rounded-lg font-body transition-colors">Edit</button>
+                              <button onClick={() => handleDeleteEkatalog(item.id)} className="text-xs px-3 py-1.5 border border-red-800/40 text-red-400 hover:bg-red-900/20 rounded-lg font-body transition-colors">Hapus</button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {ekatalogList.length === 0 && (
+                    <div className="p-12 text-center"><p className="text-cream/40 font-body text-sm">Belum ada item e-katalog.</p></div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>
