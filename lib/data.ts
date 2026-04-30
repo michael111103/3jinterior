@@ -8,7 +8,7 @@ export const siteSettings: SiteSettings = {
   address: 'Jakarta, Indonesia',
   whatsappLink: 'https://wa.me/6281385887778',
   googleMapsLink: 'https://maps.app.goo.gl/GVY1PQUqhTzufBur8?g_st=ic',
-  googleMapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.54577756017!2d106.7271985!3d-6.2297465!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2s3J%20Interior!5e0!3m2!1sen!2sid!4v1714000000000!5m2!1sen!2sid',
+  googleMapsEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.373336068718!2d106.70446869999999!3d-6.0802933!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6a033a8c1e272f%3A0xc23274b76641f6e4!2s3J%20Interior%20%3A%20Gudang%20WPC%2C%20Wall%20Panel%2C%20Interior%2C%20Wallboard%2C%20Harga%20Import%2C%20Grosir%20dan%20Murah!5e0!3m2!1sid!2sid!4v1777528395735!5m2!1sid!2sid',
 }
 
 export const categories: Category[] = [
