@@ -5,7 +5,7 @@ import { categories } from '@/lib/data'
 const categoryImages: Record<string, string> = {
   'wallpanel-wpc': '/images/wallpanel.PNG',
   'wallboard': '/images/wallboard.PNG',
-  'decking': '/images/decking.PNG',
+  'decking': '/images/decking.jpeg',
   'wpc-outdoor': '/images/wpcoutdoor.PNG',
   'holo-outdoor': '/images/holooutdoor.PNG',
   'uv-marmer': '/images/uvmarmer.PNG',
