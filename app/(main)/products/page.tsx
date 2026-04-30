@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation'
 import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 
-// Lightbox: tampil gambar full layar
 function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -52,7 +51,6 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
   )
 }
 
-// Modal detail produk
 function ProductModal({ product, categories, onClose }: { product: Product; categories: Category[]; onClose: () => void }) {
   const categoryName = categories.find(c => c.slug === product.category)?.name
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -204,7 +202,6 @@ function ProductsContent() {
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-  // ✅ REVISI: watch searchParams supaya klik footer dari halaman produk juga update kategori
   useEffect(() => {
     const category = searchParams.get('category') || 'all'
     setActiveCategory(category)
@@ -234,7 +231,7 @@ function ProductsContent() {
 
   return (
     <div className="min-h-screen">
-      {/* Header banner */}
+      {/* Header banner — teks selalu putih karena di atas foto gelap */}
       <div className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1600&q=70)` }} />
         <div className="absolute inset-0 bg-dark-900/85" />
@@ -244,10 +241,10 @@ function ProductsContent() {
             <span className="text-gold-500 text-xs font-body tracking-widest uppercase">Katalog</span>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-500" />
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-cream">
+          <h1 className="font-display text-4xl md:text-6xl font-bold" style={{ color: '#fdf6e3' }}>
             Semua <span className="gold-text">Produk</span>
           </h1>
-          <p className="text-cream/60 font-body mt-3 max-w-xl mx-auto">
+          <p className="font-body mt-3 max-w-xl mx-auto" style={{ color: 'rgba(253,246,227,0.65)' }}>
             Material interior WPC premium dengan harga grosir langsung dari gudang
           </p>
         </div>

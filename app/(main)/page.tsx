@@ -64,9 +64,10 @@ export default function HomePage() {
                 />
                 <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-dark-900/95 to-transparent" />
               </div>
+              {/* Teks di atas foto — selalu putih di mode apapun */}
               <div className="absolute bottom-0 left-0 right-0 p-5">
-                <h3 className="font-display text-xl font-semibold text-cream group-hover:gold-text transition-all duration-300">{cat.name}</h3>
-                <p className="text-cream/60 text-sm font-body mt-1 line-clamp-2">{cat.description}</p>
+                <h3 className="font-display text-xl font-semibold transition-all duration-300" style={{ color: '#fdf6e3' }}>{cat.name}</h3>
+                <p className="text-sm font-body mt-1 line-clamp-2" style={{ color: 'rgba(253,246,227,0.65)' }}>{cat.description}</p>
                 <div className="flex items-center gap-2 mt-3 text-gold-400 text-sm font-body">
                   <span>Lihat Produk</span>
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,9 +103,7 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* 2 kolom: paragraf kiri, kartu kanan */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-14">
-            {/* Kiri: 2 paragraf */}
             <div className="space-y-5">
               <p className="text-cream/80 font-body text-lg leading-relaxed">
                 3J Interior adalah gudang material interior WPC terpercaya di Jakarta. Kami hadir sebagai solusi lengkap untuk kebutuhan renovasi dan konstruksi interior dengan produk berkualitas tinggi dan harga yang kompetitif.
@@ -125,7 +124,6 @@ export default function HomePage() {
               </a>
             </div>
 
-            {/* Kanan: 4 kartu icon */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {whyUs.map((item) => (
                 <div

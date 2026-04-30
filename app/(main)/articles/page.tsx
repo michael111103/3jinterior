@@ -12,7 +12,7 @@ export default function ArticlesPage() {
 
   return (
     <div className="min-h-screen pt-24">
-      {/* Header */}
+      {/* Header — teks selalu putih karena di atas foto gelap */}
       <div className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1600&q=70)` }} />
         <div className="absolute inset-0 bg-dark-900/85" />
@@ -22,10 +22,10 @@ export default function ArticlesPage() {
             <span className="text-gold-500 text-xs font-body tracking-widest uppercase">Blog & Tips</span>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-500" />
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-bold text-cream">
+          <h1 className="font-display text-4xl md:text-6xl font-bold" style={{ color: '#fdf6e3' }}>
             Artikel & <span className="gold-text">Inspirasi</span>
           </h1>
-          <p className="text-cream/60 font-body mt-3">Tips dan panduan desain interior dari para ahli kami</p>
+          <p className="font-body mt-3" style={{ color: 'rgba(253,246,227,0.65)' }}>Tips dan panduan desain interior dari para ahli kami</p>
         </div>
       </div>
 
