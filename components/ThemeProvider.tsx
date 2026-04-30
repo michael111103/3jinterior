@@ -1,47 +1,36 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
-export default function ThemeToggle() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+type Theme = 'dark' | 'light'
+const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
+  theme: 'dark',
+  toggle: () => {},
+})
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
+    const saved = localStorage.getItem('3j-theme') as Theme | null
     const initial = saved ?? 'dark'
     setTheme(initial)
-    document.documentElement.setAttribute('data-theme', initial)
+    document.documentElement.classList.toggle('light', initial === 'light')
   }, [])
 
   const toggle = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    localStorage.setItem('theme', next)
-    document.documentElement.setAttribute('data-theme', next)
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('3j-theme', next)
+      document.documentElement.classList.toggle('light', next === 'light')
+      return next
+    })
   }
 
   return (
-    <button
-      onClick={toggle}
-      aria-label="Toggle tema"
-      title={theme === 'dark' ? 'Mode Terang' : 'Mode Gelap'}
-      style={{
-        padding: '7px',
-        background: 'none',
-        border: '1px solid rgba(212,152,15,0.35)',
-        borderRadius: '50%',
-        cursor: 'pointer',
-        width: '34px',
-        height: '34px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '15px',
-        transition: 'border-color 0.2s, background 0.2s',
-        flexShrink: 0,
-      }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = '#d4980f')}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,152,15,0.35)')}
-    >
-      {theme === 'dark' ? '☀️' : '🌙'}
-    </button>
+    <ThemeContext.Provider value={{ theme, toggle }}>
+      {children}
+    </ThemeContext.Provider>
   )
 }
+
+export const useTheme = () => useContext(ThemeContext)
