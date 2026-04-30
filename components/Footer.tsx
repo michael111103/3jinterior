@@ -11,13 +11,24 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <Image
-                src="/images/logo-3j.PNG"
-                alt="3J Interior"
-                width={64}
-                height={64}
-                style={{ height: '52px', width: 'auto', objectFit: 'contain' }}
-              />
+              <div style={{
+                background: '#ffffff',
+                borderRadius: '50%',
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <Image
+                  src="/images/logo-3j.PNG"
+                  alt="3J Interior"
+                  width={64}
+                  height={64}
+                  style={{ height: '44px', width: 'auto', objectFit: 'contain' }}
+                />
+              </div>
               <div>
                 <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fdf6e3', lineHeight: 1, margin: 0, marginBottom: '5px' }}>3J Interior</p>
                 <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4a843', margin: 0 }}>Gudang WPC Premium</p>
