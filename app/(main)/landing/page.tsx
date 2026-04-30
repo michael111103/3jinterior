@@ -8,20 +8,20 @@ import type { Metadata } from 'next'
 const whatsappNumber = '6281385887778'
 
 const catalogItems = [
-  { label: 'Semua Product', link: 'https://example.com/katalog-semua' },
-  { label: 'Wallpanel / WPC', link: 'https://example.com/katalog-wallpanel-wpc' },
-  { label: 'Wallboard', link: 'https://example.com/katalog-wallboard' },
-  { label: 'Decking', link: 'https://example.com/katalog-decking' },
-  { label: 'WPC Outdoor', link: 'https://example.com/katalog-wpc-outdoor' },
-  { label: 'Holo Outdoor', link: 'https://example.com/katalog-holo-outdoor' },
-  { label: 'UV Marmer', link: 'https://example.com/katalog-uv-marmer' },
-  { label: 'WPC Mini Seri H', link: 'https://example.com/katalog-wpc-mini-h' },
-  { label: 'WPC Mini Seri L', link: 'https://example.com/katalog-wpc-mini-l' },
-  { label: 'Holo Indoor', link: 'https://example.com/katalog-holo-indoor' },
-  { label: 'WPC 30cm', link: 'https://example.com/katalog-wpc-30cm' },
-  { label: 'List Moulding', link: 'https://example.com/katalog-list-moulding' },
-  { label: 'PU Stone', link: 'https://example.com/katalog-pu-stone' },
-  { label: 'List Alumunium', link: 'https://example.com/katalog-list-alumunium' },
+  { label: 'Semua Product', link: 'https://drive.google.com/drive/folders/1uasa3pYmiqzSPP8UVyjpBMA1KdXTYE9v' },
+  { label: 'Wallpanel / WPC', link: 'https://drive.google.com/drive/folders/10yLbeJWM9ipXiBMtixgca19COLGGWMrS' },
+  { label: 'Wallboard', link: 'https://drive.google.com/drive/folders/1dHnu5ClvSPxWosm8HaiTDXAHQFPLy7tE' },
+  { label: 'Decking', link: 'https://drive.google.com/drive/folders/1hpd4S4aVYRU3eqXjg4lBI9pQWp0Sf-DN' },
+  { label: 'WPC Outdoor', link: 'https://drive.google.com/drive/folders/14lnG0dDVm3Ri9xXNTynOU43VCtTR6XUk' },
+  { label: 'Holo Outdoor', link: 'https://drive.google.com/drive/folders/1B1d-xE7jOO96yTrLIdoK_7FJxoTSL7K2' },
+  { label: 'UV Marmer', link: 'https://drive.google.com/drive/folders/1_y9Tjzx_j-1gA4wL3Pb9jNtJK0QDpg-P' },
+  { label: 'WPC Mini Seri N', link: 'https://drive.google.com/drive/folders/1iFH8Wss7E4pzsPDDIC4ccr9uz-HBWPbo' },
+  { label: 'WPC Mini Seri L', link: 'https://drive.google.com/drive/folders/1mHk9MS3XYu-Cmh8adk7w8GNkx10MYbiM' },
+  { label: 'Holo Indoor', link: 'https://drive.google.com/drive/folders/1gPgsVgfUZ8pp-Dm38cqtfMEX2M4FXOy1' },
+  { label: 'WPC 30cm', link: 'https://drive.google.com/drive/folders/1apemeC8scM8LDPSHiUlBqSK2Xqo4l1oB' },
+  { label: 'List Moulding', link: 'https://drive.google.com/drive/folders/1Gt757Q9FdULCOP9sxqxkc5FLsjiaGaFC' },
+  { label: 'PU Stone', link: 'https://drive.google.com/drive/folders/1MmdkX8mzblqB_r4S6UUCorwOK5beZdZP' },
+  { label: 'List Alumunium', link: 'https://drive.google.com/drive/folders/1ll7uRGfaWukRDC7Axs5Gjv93HftNiUE-' },
 ]
 
 const features = [
