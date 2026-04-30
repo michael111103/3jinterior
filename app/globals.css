@@ -176,12 +176,14 @@ body {
   background: linear-gradient(to top, var(--img-gradient) 0%, rgba(10,8,4,0.3) 60%, transparent 100%);
 }
 
-/* Light mode text helpers used inline */
+/* Light mode text helpers */
 html.light .text-cream { color: var(--text-primary) !important; }
 html.light .text-cream\/60 { color: var(--text-secondary) !important; }
 html.light .text-cream\/40 { color: var(--text-muted) !important; }
 html.light .text-cream\/80 { color: rgba(26,18,8,0.8) !important; }
 html.light .text-cream\/70 { color: rgba(26,18,8,0.7) !important; }
+html.light .text-cream\/75 { color: rgba(26,18,8,0.75) !important; }
+html.light .text-cream\/65 { color: rgba(26,18,8,0.65) !important; }
 html.light .text-cream\/50 { color: rgba(26,18,8,0.5) !important; }
 html.light .text-cream\/30 { color: rgba(26,18,8,0.3) !important; }
 html.light .bg-dark-800 { background-color: var(--bg-section) !important; }
