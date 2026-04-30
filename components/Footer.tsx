@@ -66,23 +66,23 @@ export default function Footer() {
           {/* Kategori Produk - 2 kolom */}
           <div>
             <h4 className="font-display text-gold-400 text-lg mb-4 font-semibold">Kategori Produk</h4>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
               {categories.map((cat) => (
                 <li key={cat.id}>
                   <Link
                     href={`/products?category=${cat.slug}`}
-                    className="text-cream/60 hover:text-gold-400 text-sm font-body transition-all duration-300 flex items-center gap-2 group"
+                    className="text-cream/60 hover:text-gold-400 text-sm font-body transition-all duration-300 flex items-center gap-2.5 group"
                   >
-                    <div className="relative w-7 h-7 rounded overflow-hidden shrink-0 border border-gold-900/40 group-hover:border-gold-500/60 group-hover:shadow-[0_0_8px_rgba(180,140,60,0.4)] transition-all duration-300">
+                    <div className="relative w-10 h-10 shrink-0 group-hover:drop-shadow-[0_0_6px_rgba(180,140,60,0.7)] transition-all duration-300">
                       <Image
                         src={categoryImages[cat.slug] ?? cat.image}
                         alt={cat.name}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        sizes="28px"
+                        className="object-contain group-hover:scale-110 transition-transform duration-300"
+                        sizes="40px"
                       />
                     </div>
-                    <span className="group-hover:text-gold-400 transition-colors duration-300">{cat.name}</span>
+                    <span className="group-hover:text-gold-400 transition-colors duration-300 leading-tight">{cat.name}</span>
                   </Link>
                 </li>
               ))}
