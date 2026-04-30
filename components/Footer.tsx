@@ -2,6 +2,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { categories } from '@/lib/data'
 
+const categoryImages: Record<string, string> = {
+  'wallpanel-wpc': '/images/wallpanel.jpeg',
+  'wallboard': '/images/wallboard.jpeg',
+  'decking': '/images/decking.jpeg',
+  'wpc-outdoor': '/images/wpcoutdoor.jpeg',
+  'holo-outdoor': '/images/holooutdoor.jpeg',
+  'uv-marmer': '/images/uvmarmer.jpeg',
+  'wpc-mini-seri-h': '/images/wpcminiserih.jpeg',
+  'wpc-mini-seri-l': '/images/wpcminiseril.jpeg',
+  'holo-indoor': '/images/holoindoor.jpeg',
+  'wpc-30cm': '/images/wpc30cm.jpeg',
+  'list-moulding': '/images/listmoulding.jpeg',
+  'pu-stone': '/images/pustone.jpeg',
+  'list-alumunium': '/images/listalumunium.jpeg',
+}
+
 export default function Footer() {
   return (
     <footer className="bg-dark-800 border-t border-gold-900/30">
@@ -53,10 +69,20 @@ export default function Footer() {
             <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
               {categories.map((cat) => (
                 <li key={cat.id}>
-                  <Link href={`/products?category=${cat.slug}`}
-                    className="text-cream/60 hover:text-gold-400 text-sm font-body transition-colors flex items-center gap-2 group">
-                    <span className="text-gold-700 group-hover:text-gold-400 transition-colors shrink-0">◆</span>
-                    {cat.name}
+                  <Link
+                    href={`/products?category=${cat.slug}`}
+                    className="text-cream/60 hover:text-gold-400 text-sm font-body transition-all duration-300 flex items-center gap-2 group"
+                  >
+                    <div className="relative w-7 h-7 rounded overflow-hidden shrink-0 border border-gold-900/40 group-hover:border-gold-500/60 group-hover:shadow-[0_0_8px_rgba(180,140,60,0.4)] transition-all duration-300">
+                      <Image
+                        src={categoryImages[cat.slug] ?? cat.image}
+                        alt={cat.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        sizes="28px"
+                      />
+                    </div>
+                    <span className="group-hover:text-gold-400 transition-colors duration-300">{cat.name}</span>
                   </Link>
                 </li>
               ))}
