@@ -128,8 +128,11 @@ export default function HomePage() {
             {/* Kanan: 4 kartu icon */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {whyUs.map((item) => (
-                <div key={item.title} className="glass-card rounded-xl p-6 text-center">
-                  <div className="text-4xl mb-4">{item.icon}</div>
+                <div
+                  key={item.title}
+                  className="glass-card rounded-xl p-6 text-center transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:border-gold-500/60 hover:shadow-[0_0_24px_rgba(180,140,60,0.35)] cursor-default"
+                >
+                  <div className="text-4xl mb-4 transition-transform duration-300 hover:scale-110">{item.icon}</div>
                   <h3 className="font-display text-lg font-semibold text-cream mb-2">{item.title}</h3>
                   <p className="text-cream/60 text-sm font-body leading-relaxed">{item.desc}</p>
                 </div>
