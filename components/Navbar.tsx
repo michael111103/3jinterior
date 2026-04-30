@@ -117,7 +117,7 @@ export default function Navbar() {
             </button>
 
             {/* WA Button desktop */}
-            
+            <a
               href="https://wa.me/6281385887778"
               target="_blank" rel="noopener noreferrer"
               className="hidden md:flex btn-gold"
