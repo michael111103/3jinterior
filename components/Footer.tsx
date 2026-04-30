@@ -19,8 +19,8 @@ export default function Footer() {
                 style={{ height: '52px', width: 'auto', objectFit: 'contain' }}
               />
               <div>
-                <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fdf6e3', lineHeight: 1, margin: 0 }}>3J Interior</p>
-                <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f', marginTop: '3px', margin: 0 }}>Gudang WPC Premium</p>
+                <p style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fdf6e3', lineHeight: 1, margin: 0, marginBottom: '5px' }}>3J Interior</p>
+                <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4a843', margin: 0 }}>Gudang WPC Premium</p>
               </div>
             </div>
             <p className="text-cream/60 text-sm leading-relaxed font-body">
