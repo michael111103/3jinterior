@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
@@ -7,6 +7,110 @@ import { supabase } from '@/lib/supabase'
 type Tab = 'overview' | 'products' | 'categories'
 
 const ADMIN_KEY = '3j_admin'
+
+// ─── KOMPONEN UPLOAD GAMBAR ───────────────────────────────
+function ImageUploader({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (url: string) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [mode, setMode] = useState<'url' | 'upload'>('url')
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const ext = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      const { error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false })
+      if (error) throw error
+      const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
+      onChange(data.publicUrl)
+    } catch (err) {
+      alert('Gagal upload gambar. Coba lagi.')
+      console.error(err)
+    }
+    setUploading(false)
+    if (inputRef.current) inputRef.current.value = ''
+  }
+
+  return (
+    <div>
+      {/* Toggle URL / Upload */}
+      <div className="flex gap-2 mb-2">
+        <button
+          type="button"
+          onClick={() => setMode('url')}
+          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'url' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}
+        >
+          Pakai URL
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('upload')}
+          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'upload' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}
+        >
+          Unggah File
+        </button>
+      </div>
+
+      {mode === 'url' ? (
+        <input
+          type="url"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+          placeholder="https://..."
+        />
+      ) : (
+        <div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="w-full px-4 py-2.5 bg-dark-700 border border-dashed border-gold-800/50 rounded-xl text-cream/60 font-body text-sm hover:border-gold-500 hover:text-cream transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {uploading ? (
+              <>
+                <svg className="animate-spin w-4 h-4 text-gold-400" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Mengunggah...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Klik untuk unggah gambar
+              </>
+            )}
+          </button>
+          <p className="text-cream/30 text-xs font-body mt-1">JPG, PNG, WEBP — dari file atau galeri HP</p>
+        </div>
+      )}
+
+      {value && (
+        <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${value})` }} />
+      )}
+    </div>
+  )
+}
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -343,10 +447,11 @@ export default function AdminDashboard() {
                         rows={3} className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors resize-none" placeholder="Deskripsi produk" />
                     </div>
                     <div>
-                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">URL Gambar</label>
-                      <input type="url" value={newProduct.image || ''} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" placeholder="https://..." />
-                      {newProduct.image && <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${newProduct.image})` }} />}
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
+                      <ImageUploader
+                        value={newProduct.image || ''}
+                        onChange={url => setNewProduct({ ...newProduct, image: url })}
+                      />
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Ukuran (pisah dengan koma)</label>
@@ -392,10 +497,11 @@ export default function AdminDashboard() {
                         rows={3} className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors resize-none" />
                     </div>
                     <div>
-                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">URL Gambar</label>
-                      <input type="url" value={editingProduct.image} onChange={e => setEditingProduct({ ...editingProduct, image: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" />
-                      {editingProduct.image && <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${editingProduct.image})` }} />}
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
+                      <ImageUploader
+                        value={editingProduct.image}
+                        onChange={url => setEditingProduct({ ...editingProduct, image: url })}
+                      />
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={!!editingProduct.featured} onChange={e => setEditingProduct({ ...editingProduct, featured: e.target.checked })} className="w-4 h-4 accent-gold-500" />
@@ -502,10 +608,11 @@ export default function AdminDashboard() {
                         rows={3} className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors resize-none" placeholder="Deskripsi kategori..." />
                     </div>
                     <div>
-                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">URL Gambar</label>
-                      <input type="url" value={newCategory.image || ''} onChange={e => setNewCategory({ ...newCategory, image: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" placeholder="https://..." />
-                      {newCategory.image && <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${newCategory.image})` }} />}
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
+                      <ImageUploader
+                        value={newCategory.image || ''}
+                        onChange={url => setNewCategory({ ...newCategory, image: url })}
+                      />
                     </div>
                   </div>
                   <div className="flex gap-3 mt-6">
@@ -540,10 +647,11 @@ export default function AdminDashboard() {
                         rows={3} className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors resize-none" />
                     </div>
                     <div>
-                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">URL Gambar</label>
-                      <input type="url" value={editingCategory.image} onChange={e => setEditingCategory({ ...editingCategory, image: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" />
-                      {editingCategory.image && <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${editingCategory.image})` }} />}
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
+                      <ImageUploader
+                        value={editingCategory.image}
+                        onChange={url => setEditingCategory({ ...editingCategory, image: url })}
+                      />
                     </div>
                   </div>
                   <div className="flex gap-3 mt-6">
