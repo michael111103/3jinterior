@@ -79,6 +79,7 @@ export default function Footer() {
                         alt={cat.name}
                         fill
                         className="object-contain group-hover:scale-110 transition-transform duration-300"
+                        style={{ mixBlendMode: 'screen' }}
                         sizes="40px"
                       />
                     </div>
