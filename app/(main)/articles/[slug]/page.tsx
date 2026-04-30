@@ -89,7 +89,7 @@ Untuk konsultasi langsung mengenai kebutuhan material interior Anda, jangan ragu
 
   return (
     <div className="min-h-screen pt-24">
-      {/* Hero */}
+      {/* Hero — teks selalu putih karena di atas foto gelap */}
       <div className="relative h-72 md:h-96 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${article.image})` }} />
         <div className="absolute inset-0 bg-dark-900/75" />
@@ -100,15 +100,16 @@ Untuk konsultasi langsung mengenai kebutuhan material interior Anda, jangan ragu
                 <span key={tag} className="text-xs font-body px-2.5 py-1 bg-gold-900/50 border border-gold-700/50 text-gold-400 rounded-full">{tag}</span>
               ))}
             </div>
-            <h1 className="font-display text-2xl md:text-4xl font-bold text-cream leading-tight">{article.title}</h1>
-            <p className="text-cream/50 text-sm font-body mt-3">
+            {/* Judul & tanggal dikunci putih — di atas foto gelap */}
+            <h1 className="font-display text-2xl md:text-4xl font-bold leading-tight" style={{ color: '#fdf6e3' }}>{article.title}</h1>
+            <p className="text-sm font-body mt-3" style={{ color: 'rgba(253,246,227,0.6)' }}>
               {new Date(article.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · Oleh {article.author}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Content — ikut tema (light = gelap, dark = terang) */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Article body */}
