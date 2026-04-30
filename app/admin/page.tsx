@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -13,8 +14,6 @@ export default function AdminLoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    // Simple auth - in production use proper JWT/session
     await new Promise(r => setTimeout(r, 800))
     if (username === 'admin' && password === '3jinterior2026') {
       localStorage.setItem('3j_admin', 'authenticated')
@@ -27,7 +26,6 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-900 px-4">
-      {/* Background pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-5" style={{ background: 'radial-gradient(circle, #d4980f 0%, transparent 70%)' }} />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-5" style={{ background: 'radial-gradient(circle, #d4980f 0%, transparent 70%)' }} />
@@ -36,8 +34,30 @@ export default function AdminLoginPage() {
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center mx-auto mb-4 shadow-xl" style={{ boxShadow: '0 0 40px rgba(212,152,15,0.3)' }}>
-            <span className="text-dark-900 font-display font-bold text-xl">3J</span>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '50%',
+              width: '56px',
+              height: '56px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              boxShadow: '0 0 30px rgba(212,152,15,0.25)',
+            }}>
+              <Image
+                src="/images/logo-3j.PNG"
+                alt="3J Interior"
+                width={64}
+                height={64}
+                style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+              />
+            </div>
+            <div className="text-left">
+              <p style={{ fontWeight: 700, fontSize: '1.1rem', color: '#fdf6e3', lineHeight: 1, margin: 0, marginBottom: '4px' }}>3J Interior</p>
+              <p style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4a843', margin: 0 }}>Gudang WPC Premium</p>
+            </div>
           </div>
           <h1 className="font-display text-3xl font-bold gold-text">Admin Panel</h1>
           <p className="text-cream/50 font-body text-sm mt-1">3J Interior Management System</p>
@@ -91,10 +111,6 @@ export default function AdminLoginPage() {
               ) : 'Masuk ke Dashboard'}
             </button>
           </form>
-
-          <div className="mt-6 pt-5 border-t border-gold-900/20">
-            <p className="text-cream/30 text-xs font-body text-center">Default: admin / 3jinterior2026</p>
-          </div>
         </div>
       </div>
     </div>
