@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 
@@ -43,47 +44,26 @@ function ImageUploader({
 
   return (
     <div>
-      {/* Toggle URL / Upload */}
       <div className="flex gap-2 mb-2">
-        <button
-          type="button"
-          onClick={() => setMode('url')}
-          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'url' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}
-        >
+        <button type="button" onClick={() => setMode('url')}
+          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'url' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}>
           Pakai URL
         </button>
-        <button
-          type="button"
-          onClick={() => setMode('upload')}
-          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'upload' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}
-        >
+        <button type="button" onClick={() => setMode('upload')}
+          className={`text-xs px-3 py-1 rounded-lg font-body transition-colors ${mode === 'upload' ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/40 border border-cream/10 hover:text-cream/60'}`}>
           Unggah File
         </button>
       </div>
 
       {mode === 'url' ? (
-        <input
-          type="url"
-          value={value}
-          onChange={e => onChange(e.target.value)}
+        <input type="url" value={value} onChange={e => onChange(e.target.value)}
           className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
-          placeholder="https://..."
-        />
+          placeholder="https://..." />
       ) : (
         <div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="w-full px-4 py-2.5 bg-dark-700 border border-dashed border-gold-800/50 rounded-xl text-cream/60 font-body text-sm hover:border-gold-500 hover:text-cream transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-          >
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+          <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}
+            className="w-full px-4 py-2.5 bg-dark-700 border border-dashed border-gold-800/50 rounded-xl text-cream/60 font-body text-sm hover:border-gold-500 hover:text-cream transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {uploading ? (
               <>
                 <svg className="animate-spin w-4 h-4 text-gold-400" fill="none" viewBox="0 0 24 24">
@@ -107,6 +87,77 @@ function ImageUploader({
 
       {value && (
         <div className="mt-2 w-full h-24 rounded-lg bg-cover bg-center border border-gold-800/20" style={{ backgroundImage: `url(${value})` }} />
+      )}
+    </div>
+  )
+}
+
+// ─── KOMPONEN INPUT UKURAN ────────────────────────────────
+function SizesInput({
+  sizes,
+  onChange,
+}: {
+  sizes: string[]
+  onChange: (sizes: string[]) => void
+}) {
+  const [input, setInput] = useState('')
+
+  const handleAdd = () => {
+    const val = input.trim()
+    if (!val) return
+    if (!sizes.includes(val)) onChange([...sizes, val])
+    setInput('')
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAdd()
+    }
+  }
+
+  const handleRemove = (size: string) => {
+    onChange(sizes.filter(s => s !== size))
+  }
+
+  return (
+    <div>
+      <div className="flex gap-2 mb-2">
+        <input
+          type="text"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1 px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors"
+          placeholder="cth: 2.9m x 30cm"
+        />
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="px-4 py-2.5 bg-gold-900/40 border border-gold-800/40 text-gold-400 hover:bg-gold-900/60 rounded-xl font-body text-sm transition-colors"
+        >
+          + Tambah
+        </button>
+      </div>
+      <p className="text-cream/30 text-xs font-body mb-2">Ketik ukuran lalu tekan Enter atau klik Tambah</p>
+      {sizes.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {sizes.map(size => (
+            <div key={size} className="flex items-center gap-1.5 px-3 py-1 bg-dark-700 border border-gold-800/30 rounded-lg">
+              <span className="text-cream text-xs font-body">{size}</span>
+              <button
+                type="button"
+                onClick={() => handleRemove(size)}
+                className="text-red-400/60 hover:text-red-400 transition-colors text-sm leading-none"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {sizes.length === 0 && (
+        <p className="text-cream/20 text-xs font-body italic">Belum ada ukuran ditambahkan</p>
       )}
     </div>
   )
@@ -295,8 +346,23 @@ export default function AdminDashboard() {
       <aside className="w-64 bg-dark-800 border-r border-gold-900/30 flex flex-col fixed h-full z-40">
         <div className="p-6 border-b border-gold-900/20">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-400 to-gold-700 flex items-center justify-center">
-              <span className="text-dark-900 font-display font-bold text-sm">3J</span>
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <Image
+                src="/images/logo-3j.PNG"
+                alt="3J Interior"
+                width={48}
+                height={48}
+                style={{ height: '26px', width: 'auto', objectFit: 'contain' }}
+              />
             </div>
             <div>
               <p className="font-display font-semibold gold-text text-base">3J Interior</p>
@@ -307,15 +373,10 @@ export default function AdminDashboard() {
 
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => setTab(item.id)}
+            <button key={item.id} onClick={() => setTab(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-body transition-all duration-200 text-left ${
-                tab === item.id
-                  ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40'
-                  : 'text-cream/60 hover:text-cream hover:bg-dark-700'
-              }`}
-            >
+                tab === item.id ? 'bg-gold-900/40 text-gold-400 border border-gold-800/40' : 'text-cream/60 hover:text-cream hover:bg-dark-700'
+              }`}>
               <span>{item.icon}</span>
               {item.label}
             </button>
@@ -334,12 +395,9 @@ export default function AdminDashboard() {
 
       {/* Main */}
       <main className="ml-64 flex-1 p-6 md:p-8 overflow-auto">
-        {/* Toast */}
         {toast && (
           <div className={`fixed top-6 right-6 z-50 border px-5 py-3 rounded-xl font-body text-sm shadow-xl ${
-            toastType === 'error'
-              ? 'bg-red-900/90 border-red-700/50 text-red-300'
-              : 'bg-green-900/90 border-green-700/50 text-green-300'
+            toastType === 'error' ? 'bg-red-900/90 border-red-700/50 text-red-300' : 'bg-green-900/90 border-green-700/50 text-green-300'
           }`}>
             {toastType === 'success' ? '✓' : '✕'} {toast}
           </div>
@@ -448,15 +506,14 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
-                      <ImageUploader
-                        value={newProduct.image || ''}
-                        onChange={url => setNewProduct({ ...newProduct, image: url })}
-                      />
+                      <ImageUploader value={newProduct.image || ''} onChange={url => setNewProduct({ ...newProduct, image: url })} />
                     </div>
                     <div>
-                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Ukuran (pisah dengan koma)</label>
-                      <input type="text" onChange={e => setNewProduct({ ...newProduct, sizes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
-                        className="w-full px-4 py-2.5 bg-dark-700 border border-gold-800/30 rounded-xl text-cream font-body text-sm focus:outline-none focus:border-gold-500 transition-colors" placeholder="2.9m x 30cm, 2.9m x 15cm" />
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Ukuran</label>
+                      <SizesInput
+                        sizes={newProduct.sizes || []}
+                        onChange={sizes => setNewProduct({ ...newProduct, sizes })}
+                      />
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={!!newProduct.featured} onChange={e => setNewProduct({ ...newProduct, featured: e.target.checked })} className="w-4 h-4 accent-gold-500" />
@@ -498,9 +555,13 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
-                      <ImageUploader
-                        value={editingProduct.image}
-                        onChange={url => setEditingProduct({ ...editingProduct, image: url })}
+                      <ImageUploader value={editingProduct.image} onChange={url => setEditingProduct({ ...editingProduct, image: url })} />
+                    </div>
+                    <div>
+                      <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Ukuran</label>
+                      <SizesInput
+                        sizes={editingProduct.sizes || []}
+                        onChange={sizes => setEditingProduct({ ...editingProduct, sizes })}
                       />
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -529,8 +590,8 @@ export default function AdminDashboard() {
                       <tr className="border-b border-gold-900/30">
                         <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Produk</th>
                         <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden md:table-cell">Kategori</th>
-                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widests uppercase hidden lg:table-cell">Ukuran</th>
-                        <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widests uppercase">Featured</th>
+                        <th className="text-left px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase hidden lg:table-cell">Ukuran</th>
+                        <th className="text-center px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Featured</th>
                         <th className="text-right px-5 py-3 text-gold-400 text-xs font-body tracking-widest uppercase">Aksi</th>
                       </tr>
                     </thead>
@@ -549,7 +610,15 @@ export default function AdminDashboard() {
                             </span>
                           </td>
                           <td className="px-5 py-3 hidden lg:table-cell">
-                            <p className="text-cream/50 text-xs font-body">{product.sizes?.join(', ') || '-'}</p>
+                            {product.sizes && product.sizes.length > 0 ? (
+                              <div className="flex flex-wrap gap-1">
+                                {product.sizes.map(s => (
+                                  <span key={s} className="text-xs font-body px-2 py-0.5 bg-dark-700 border border-gold-900/30 text-cream/50 rounded-md">{s}</span>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-cream/30 text-xs font-body">-</p>
+                            )}
                           </td>
                           <td className="px-5 py-3 text-center">
                             {product.featured ? <span className="text-gold-400 text-xs">⭐ Ya</span> : <span className="text-cream/30 text-xs">-</span>}
@@ -609,10 +678,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
-                      <ImageUploader
-                        value={newCategory.image || ''}
-                        onChange={url => setNewCategory({ ...newCategory, image: url })}
-                      />
+                      <ImageUploader value={newCategory.image || ''} onChange={url => setNewCategory({ ...newCategory, image: url })} />
                     </div>
                   </div>
                   <div className="flex gap-3 mt-6">
@@ -648,10 +714,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <label className="text-gold-400 text-xs font-body tracking-wide uppercase block mb-1.5">Gambar</label>
-                      <ImageUploader
-                        value={editingCategory.image}
-                        onChange={url => setEditingCategory({ ...editingCategory, image: url })}
-                      />
+                      <ImageUploader value={editingCategory.image} onChange={url => setEditingCategory({ ...editingCategory, image: url })} />
                     </div>
                   </div>
                   <div className="flex gap-3 mt-6">
