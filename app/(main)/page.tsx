@@ -109,7 +109,7 @@ export default function HomePage() {
                 3J Interior adalah gudang material interior WPC terpercaya di Jakarta. Kami hadir sebagai solusi lengkap untuk kebutuhan renovasi dan konstruksi interior dengan produk berkualitas tinggi dan harga yang kompetitif.
               </p>
               <p className="text-cream/70 font-body text-lg leading-relaxed">
-                Melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
+                Dengan pengalaman dan sudah melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
               </p>
               <a
                 href="https://wa.me/6281385887778"
