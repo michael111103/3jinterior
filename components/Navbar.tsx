@@ -8,7 +8,7 @@ const navLinks = [
   { href: '/', label: 'Beranda' },
   { href: '/products', label: 'Produk' },
   { href: '/articles', label: 'Artikel' },
-  { href: '/landing', label: 'Katalog' },
+  { href: '/landing', label: 'E-Katalog' },
   { href: '/#about', label: 'Tentang Kami' },
   { href: '/#contact', label: 'Kontak' },
 ]
