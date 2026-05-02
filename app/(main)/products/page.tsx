@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Product, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
+import { useTheme } from '@/components/ThemeProvider'
 
 function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
@@ -54,6 +55,8 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 function ProductModal({ product, categories, onClose }: { product: Product; categories: Category[]; onClose: () => void }) {
   const categoryName = categories.find(c => c.slug === product.category)?.name
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -65,13 +68,25 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
     }
   }, [onClose, lightboxOpen])
 
+  // Warna dinamis berdasarkan theme
+  const modalBg = isLight ? '#ffffff' : '#1a1507'
+  const modalBorder = isLight ? 'rgba(212,152,15,0.25)' : 'rgba(212,152,15,0.3)'
+  const closeBtnBg = isLight ? 'rgba(240,240,240,0.9)' : 'rgba(0,0,0,0.6)'
+  const closeBtnBorder = isLight ? 'rgba(212,152,15,0.4)' : 'rgba(212,152,15,0.3)'
+  const closeBtnColor = isLight ? '#333333' : '#fdf6e3'
+  const titleColor = isLight ? '#1a1507' : '#fdf6e3'
+  const descColor = isLight ? 'rgba(30,20,5,0.65)' : 'rgba(253,246,227,0.65)'
+  const sizeBg = isLight ? 'rgba(212,152,15,0.08)' : 'rgba(212,152,15,0.1)'
+  const sizeBorder = isLight ? 'rgba(212,152,15,0.4)' : 'rgba(212,152,15,0.3)'
+  const overlayBg = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.85)'
+
   return (
     <>
       <div
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 99999,
-          background: 'rgba(0,0,0,0.85)',
+          background: overlayBg,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           padding: '16px',
         }}
@@ -79,8 +94,8 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            background: '#1a1507',
-            border: '1px solid rgba(212,152,15,0.3)',
+            background: modalBg,
+            border: `1px solid ${modalBorder}`,
             borderRadius: '16px',
             width: '100%',
             maxWidth: '820px',
@@ -96,9 +111,9 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
             style={{
               position: 'absolute', top: '12px', right: '12px', zIndex: 10,
               width: '36px', height: '36px', borderRadius: '50%',
-              background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(212,152,15,0.3)',
+              background: closeBtnBg, border: `1px solid ${closeBtnBorder}`,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fdf6e3',
+              color: closeBtnColor,
             }}
           >
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,10 +151,10 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
             <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#d4980f' }}>
               {categoryName}
             </span>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fdf6e3', lineHeight: 1.3, margin: '8px 0 12px' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: titleColor, lineHeight: 1.3, margin: '8px 0 12px' }}>
               {product.name}
             </h2>
-            <p style={{ color: 'rgba(253,246,227,0.65)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '20px' }}>
+            <p style={{ color: descColor, fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '20px' }}>
               {product.description}
             </p>
 
@@ -152,7 +167,7 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
                   {product.sizes.map((size: string) => (
                     <span key={size} style={{
                       fontSize: '0.8rem', padding: '4px 10px',
-                      background: 'rgba(212,152,15,0.1)', border: '1px solid rgba(212,152,15,0.3)',
+                      background: sizeBg, border: `1px solid ${sizeBorder}`,
                       color: '#d4980f', borderRadius: '6px',
                     }}>
                       {size}
@@ -162,7 +177,7 @@ function ProductModal({ product, categories, onClose }: { product: Product; cate
               </div>
             )}
 
-            <a
+            
               href={`https://wa.me/6281385887778?text=Halo,%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(product.name)},%20mohon%20info%20harga%20dan%20ketersediaannya`}
               target="_blank"
               rel="noopener noreferrer"
@@ -360,3 +375,4 @@ export default function ProductsPage() {
     </Suspense>
   )
 }
+      
