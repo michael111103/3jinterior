@@ -90,7 +90,7 @@ export default function HomePage() {
       </section>
 
       {/* Mengapa Kami */}
-      <section id="about" className="py-20 bg-dark-800 border-y border-gold-900/20" style={{ scrollMarginTop: '70px' }}>
+      <section id="about" className="py-20 bg-dark-800 border-y border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <div className="flex items-center justify-center gap-4 mb-3">
@@ -196,7 +196,7 @@ export default function HomePage() {
       </section>
 
       {/* Google Maps */}
-      <section id="contact" className="py-20 bg-dark-800 border-t border-gold-900/20" style={{ scrollMarginTop: '70px' }}>
+      <section id="contact" className="py-20 bg-dark-800 border-t border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
