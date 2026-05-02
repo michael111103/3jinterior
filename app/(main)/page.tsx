@@ -110,7 +110,7 @@ export default function HomePage() {
               <p className="text-cream/70 font-body text-lg leading-relaxed">
                 Dengan pengalaman dan sudah melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
               </p>
-              
+              <a
                 href="https://wa.me/6281385887778"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -227,7 +227,7 @@ export default function HomePage() {
                   isWA: true,
                 },
               ].map((item) => (
-                
+                <a
                   key={item.label}
                   href={item.link}
                   target={item.link.startsWith('http') ? '_blank' : undefined}
@@ -265,7 +265,7 @@ export default function HomePage() {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Lokasi 3J Interior"
                 />
-                
+                <a
                   href="https://maps.app.goo.gl/GVY1PQUqhTzufBur8?g_st=ic"
                   target="_blank"
                   rel="noopener noreferrer"
