@@ -89,9 +89,9 @@ export default function HomePage() {
       </section>
 
       {/* Mengapa Kami */}
-      <section className="py-20 bg-dark-800 border-y border-gold-900/20">
+      <section id="about" className="py-20 bg-dark-800 border-y border-gold-900/20" style={{ scrollMarginTop: '70px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div id="about" className="text-center mb-14" style={{ scrollMarginTop: '80px' }}>
+          <div className="text-center mb-14">
             <div className="flex items-center justify-center gap-4 mb-3">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-500" />
               <span className="text-gold-500 text-xs font-body tracking-widest uppercase">Tentang Kami</span>
@@ -110,7 +110,7 @@ export default function HomePage() {
               <p className="text-cream/70 font-body text-lg leading-relaxed">
                 Dengan pengalaman dan sudah melayani ribuan klien — mulai dari kontraktor, desainer interior, hingga pemilik rumah — kami memahami betul apa yang Anda butuhkan: material bagus, harga fair, dan pelayanan yang responsif.
               </p>
-              <a
+              
                 href="https://wa.me/6281385887778"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -195,9 +195,9 @@ export default function HomePage() {
       </section>
 
       {/* Google Maps */}
-      <section className="py-20 bg-dark-800 border-t border-gold-900/20">
+      <section id="contact" className="py-20 bg-dark-800 border-t border-gold-900/20" style={{ scrollMarginTop: '70px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div id="contact" className="text-center mb-12" style={{ scrollMarginTop: '80px' }}>
+          <div className="text-center mb-12">
             <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
               Lokasi <span className="gold-text">Kami</span>
             </h2>
@@ -227,7 +227,7 @@ export default function HomePage() {
                   isWA: true,
                 },
               ].map((item) => (
-                <a
+                
                   key={item.label}
                   href={item.link}
                   target={item.link.startsWith('http') ? '_blank' : undefined}
@@ -265,7 +265,7 @@ export default function HomePage() {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Lokasi 3J Interior"
                 />
-                <a
+                
                   href="https://maps.app.goo.gl/GVY1PQUqhTzufBur8?g_st=ic"
                   target="_blank"
                   rel="noopener noreferrer"
