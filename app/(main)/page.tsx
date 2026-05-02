@@ -64,7 +64,6 @@ export default function HomePage() {
                 />
                 <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-dark-900/95 to-transparent" />
               </div>
-              {/* Teks di atas foto — selalu putih di mode apapun */}
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <h3 className="font-display text-xl font-semibold transition-all duration-300" style={{ color: '#fdf6e3' }}>{cat.name}</h3>
                 <p className="text-sm font-body mt-1 line-clamp-2" style={{ color: 'rgba(253,246,227,0.65)' }}>{cat.description}</p>
@@ -92,13 +91,13 @@ export default function HomePage() {
       {/* Mengapa Kami */}
       <section className="py-20 bg-dark-800 border-y border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
+          <div id="about" className="text-center mb-14" style={{ scrollMarginTop: '80px' }}>
             <div className="flex items-center justify-center gap-4 mb-3">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-500" />
               <span className="text-gold-500 text-xs font-body tracking-widest uppercase">Tentang Kami</span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-gold-500" />
             </div>
-            <h2 id="about" className="font-display text-4xl md:text-5xl font-bold text-cream mb-4" style={{ scrollMarginTop: '90px' }}>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
               Mengapa <span className="gold-text">3J Interior</span> Pilihan Terbaik?
             </h2>
           </div>
@@ -198,8 +197,8 @@ export default function HomePage() {
       {/* Google Maps */}
       <section className="py-20 bg-dark-800 border-t border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 id="contact" className="font-display text-4xl md:text-5xl font-bold text-cream mb-4" style={{ scrollMarginTop: '90px' }}>
+          <div id="contact" className="text-center mb-12" style={{ scrollMarginTop: '80px' }}>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
               Lokasi <span className="gold-text">Kami</span>
             </h2>
             <p className="text-cream/60 font-body">Kunjungi showroom kami atau hubungi via WhatsApp untuk survey kebutuhan Anda</p>
