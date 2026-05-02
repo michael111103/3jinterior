@@ -90,7 +90,7 @@ export default function HomePage() {
       </section>
 
       {/* Mengapa Kami */}
-      <section id="about" className="py-20 bg-dark-800 border-y border-gold-900/20">
+      <section className="py-20 bg-dark-800 border-y border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <div className="flex items-center justify-center gap-4 mb-3">
@@ -98,7 +98,7 @@ export default function HomePage() {
               <span className="text-gold-500 text-xs font-body tracking-widest uppercase">Tentang Kami</span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-gold-500" />
             </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
+            <h2 id="about" className="font-display text-4xl md:text-5xl font-bold text-cream mb-4" style={{ scrollMarginTop: '90px' }}>
               Mengapa <span className="gold-text">3J Interior</span> Pilihan Terbaik?
             </h2>
           </div>
@@ -196,10 +196,10 @@ export default function HomePage() {
       </section>
 
       {/* Google Maps */}
-      <section id="contact" className="py-20 bg-dark-800 border-t border-gold-900/20">
+      <section className="py-20 bg-dark-800 border-t border-gold-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-cream mb-4">
+            <h2 id="contact" className="font-display text-4xl md:text-5xl font-bold text-cream mb-4" style={{ scrollMarginTop: '90px' }}>
               Lokasi <span className="gold-text">Kami</span>
             </h2>
             <p className="text-cream/60 font-body">Kunjungi showroom kami atau hubungi via WhatsApp untuk survey kebutuhan Anda</p>
